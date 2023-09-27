@@ -65,13 +65,13 @@ def startRunningCNC():
     pyautogui.click(1605, 1057)
 
 # Serielle Datenaufnahme 115200baud:
-def startDatalogging_115200(name,erfassungsdauer):
+def startDatalogging_115200(name,erfassungsdauer,iteration):
     # Serielle Kommunikation starten + Baudrate festlegen (muss mit Arduino Sketch übereinstimmen)
     ser = serial.Serial('COM5', 115200)
     # Aktuelle Datum + Uhrzeit ermitteln
     jetzt = datetime.datetime.now()
     # Ordner festlegen, in welchem die Daten gespeichert werden
-    ordnername = "txt_Daten"
+    ordnername = "raw_data_unsorted"
     # Dateinamen mit Datum und Uhrzeit erstellen
     # hier müssen auch weitere Details eingetragen werden
     dateiname = os.path.join(ordnername, jetzt.strftime("%Y-%m-%d_%H-%M-%S") + "_" + name + ".txt")
@@ -85,7 +85,7 @@ def startDatalogging_115200(name,erfassungsdauer):
                 line = ser.readline().decode().strip()
             except UnicodeDecodeError:
                 line = '9999.99,999999,9999999'
-                print('         ....UnicodeDecodeFehler')
+                print('         UnicodeDecodeFehler Referenzfahrt_' + iteration)
             file.write(line + '\n')
     ser.close()
 
@@ -96,7 +96,7 @@ def startDatalogging_57600(name,erfassungsdauer):
     # Aktuelle Datum + Uhrzeit ermitteln
     jetzt = datetime.datetime.now()
     # Ordner festlegen, in welchem die Daten gespeichert werden
-    ordnername = "txt_Daten"
+    ordnername = "raw_data_unsorted"
     # Dateinamen mit Datum und Uhrzeit erstellen
     # hier müssen auch weitere Details eingetragen werden
     dateiname = os.path.join(ordnername, jetzt.strftime("%Y-%m-%d_%H-%M-%S") + "_" + name + ".txt")
@@ -116,7 +116,7 @@ def startDatalogging_57600(name,erfassungsdauer):
 # Speichern der txt-Daten in pandas dataframe:
 def saveasDataframe():
     # Ordnerpfad festlegen
-    ordnername = "txt_Daten"
+    ordnername = "raw_data_unsorted"
 
     # Leere Liste erstellen, um Datenframes zu speichern
     alle_daten = []
@@ -151,9 +151,9 @@ def saveasDataframe():
     return alle_daten
 
 # Mail schicken:
-def sentMail(recieveradress,iteration):
+def sentMail(recieveradress,iteration,numberofdrives):
     now = datetime.datetime.now()
-    mail_content = now.strftime("%m/%d/%Y, %H:%M:%S") + ' Referenzfahrt: ' + str(iteration)
+    mail_content = now.strftime("%m/%d/%Y, %H:%M:%S") + ' Referenzfahrt: ' + str(iteration) + '/' + str(numberofdrives)
     # The mail addresses and password
     sender_address = 'stephantest691@gmail.com'
     sender_pass = 'oooldqiehttcuzsc'
