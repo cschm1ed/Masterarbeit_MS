@@ -10,13 +10,13 @@ def showlineplot(y_axes,dataframes_list,title):
     # Liniendiagramme für jede DataFrame in der Liste erstellen und anzeigen
     for i, df in enumerate(dataframes_list):
         # Erstellen Sie ein Liniendiagramm mit den entsprechenden x- und y-Spalten aus dem DataFrame
-        fig = px.line(df, x='Time[s]', y=y_axes, title=title + f'_{i}')
+        fig = px.line(df, x='Time[s]', y=y_axes, title=title + f'_{i+1}')
 
 
         # Hier werden weitere Anpassungen am Diagramm vorgenommen
 
         # Achsentitel hinzufügen
-        fig.update_xaxes(title_text='Zeit [?]')
+        fig.update_xaxes(title_text='Zeit [s]')
         fig.update_yaxes(title_text=y_axes)
 
         # Diagrammtitel ändern

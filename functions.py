@@ -73,8 +73,9 @@ def startDatalogging_115200(name,erfassungsdauer,iteration):
     # Ordner festlegen, in welchem die Daten gespeichert werden
     ordnername = "raw_data_unsorted"
     # Dateinamen mit Datum und Uhrzeit erstellen
-    # hier müssen auch weitere Details eingetragen werden
+    # hier müssen auch weitere Details eingetragen werden, bzw. im Funktionsaufruf
     dateiname = os.path.join(ordnername, jetzt.strftime("%Y-%m-%d_%H-%M-%S") + "_" + name + ".txt")
+    # hier wird die eigentliche Referenzfahrt gestartet
     startRunningCNC()
 
     with open(dateiname, 'w') as file:
@@ -85,70 +86,9 @@ def startDatalogging_115200(name,erfassungsdauer,iteration):
                 line = ser.readline().decode().strip()
             except UnicodeDecodeError:
                 line = '9999.99,999999,9999999'
-                print('         UnicodeDecodeFehler Referenzfahrt_' + iteration)
+                print('         UnicodeDecodeFehler Referenzfahrt_' + str(iteration))
             file.write(line + '\n')
     ser.close()
-
-# Serielle Datenaufnahme 57600baud:
-def startDatalogging_57600(name,erfassungsdauer):
-    # Serielle Kommunikation starten + Baudrate festlegen (muss mit Arduino Sketch übereinstimmen)
-    ser = serial.Serial('COM5', 57600)
-    # Aktuelle Datum + Uhrzeit ermitteln
-    jetzt = datetime.datetime.now()
-    # Ordner festlegen, in welchem die Daten gespeichert werden
-    ordnername = "raw_data_unsorted"
-    # Dateinamen mit Datum und Uhrzeit erstellen
-    # hier müssen auch weitere Details eingetragen werden
-    dateiname = os.path.join(ordnername, jetzt.strftime("%Y-%m-%d_%H-%M-%S") + "_" + name + ".txt")
-    try:
-        with open(dateiname, 'w') as file:
-            startzeit = time.time()  # Startzeit erfassen
-            # while True:
-            while (time.time() - startzeit) < erfassungsdauer:
-                line = ser.readline().decode().strip()
-                print(line)
-                file.write(line + '\n')
-    except KeyboardInterrupt:
-        print("Erfassung von Daten wurde gestoppt (Strg+C gedrückt).")
-    finally:
-        ser.close()
-
-# Speichern der txt-Daten in pandas dataframe:
-def saveasDataframe():
-    # Ordnerpfad festlegen
-    ordnername = "raw_data_unsorted"
-
-    # Leere Liste erstellen, um Datenframes zu speichern
-    alle_daten = []
-
-    # Durch alle Dateien im Ordner iterieren
-    for index, dateiname in enumerate(os.listdir(ordnername)):
-        if dateiname.endswith(".txt"):  # Prüfen, ob es sich um eine Textdatei handelt
-            dateipfad = os.path.join(ordnername, dateiname)
-
-            try:
-                # Einlesen der TXT-Datei mit read_table
-                data = pd.read_table(dateipfad, delim_whitespace=True)
-
-                # Neue Spaltennamen zuweisen
-                #new_columns = ['Stromstärke [mA]', 'Position [mm]']
-                #data.columns = new_columns
-
-                # Berechnung durchführen
-                # Position
-                #data['Position [mm]'] = data['Position [mm]'] / 2 * 0.3432  # Umrechnen der Dauer in Position
-                #data['Position [mm]'] = data['Position [mm]'] - (734.65 / 2 * 0.3432)  # Nullpunkt festlegen
-
-
-                # Das Datenframe zur Liste hinzufügen
-                alle_daten.append(data)
-
-
-            except Exception as e:
-                print(f"Fehler beim Verarbeiten der Datei: {dateipfad}")
-                continue  # Zur nächsten Datei springen
-    # Rückgabe der Lista aller Daten
-    return alle_daten
 
 # Mail schicken:
 def sentMail(recieveradress,iteration,numberofdrives):
@@ -172,5 +112,20 @@ def sentMail(recieveradress,iteration,numberofdrives):
     text = message.as_string()
     session.sendmail(sender_address, receiver_address, text)
     session.quit()
+
+# alle Ordnername ausgeben bekommen:
+def getallfoldernames():
+    verzeichnis = 'raw_data_sorted'
+
+    if os.path.exists(verzeichnis) and os.path.isdir(verzeichnis):
+        ordner = [d for d in os.listdir(verzeichnis) if os.path.isdir(os.path.join(verzeichnis, d))]
+        # hier werden die Ordnernamen noch ausgegeben:
+        #for ordnername in ordner:
+            #print(ordnername)
+    else:
+        print(f"Das Verzeichnis '{verzeichnis}' existiert nicht oder ist kein Verzeichnis.")
+
+    return ordner
+
 
 
