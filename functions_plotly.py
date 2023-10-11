@@ -69,22 +69,5 @@ def showbothlineplot(dataframes_list,title):
 
     return fig_list
 
-# Hier kann die fig_list als png-Datei gespeichert werden
-def savefigaspng(fig_list):
-    # Spezieller Ordner erstellen (falls er nicht existiert)
-    spezieller_ordner = 'figures'
-    if not os.path.exists(spezieller_ordner):
-        os.makedirs(spezieller_ordner)
-
-    for fig in fig_list:
-        # Auf Title zugreifen
-        title = fig.layout.title.text
-
-        # Dateipfad zum Speichern des Graphen im speziellen Ordner
-        dateipfad = os.path.join(spezieller_ordner, title + '.html')
-
-        # Graphen als PNG-Datei im speziellen Ordner speichern
-        fig.write_html(dateipfad)
-
 
 

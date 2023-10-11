@@ -20,12 +20,22 @@ for element in ordnernamen:
 # Nun kann der Ordner aus der Konsole kopiert werden:
 
 # Komplette Verarbeitung der Daten
-correct_dataframes_list = functions_pandas.doallpandasfunction(
-    ordner='20231004__USS_ACS712_withoutfilter_50Hz_Servo_ZR', filter=False)
+correct_dataframes_list_1 = functions_pandas.doallpandasfunction(
+    ordner='20231010__USS_ACS712_withfilter_50Hz_Servo_ZR', filter=True)
+
+correct_dataframes_list_2 = functions_pandas.doallpandasfunction(
+    ordner='20231004__USS_INA219_withfilter_50Hz_Servo_ZR', filter=False)
+
+
+
 # Ausgabe der dataframes Liste
-# print(correct_dataframes_list)
+#print(correct_dataframes_list_1)
+
 
 # Grafische Verarbeitung der dataframes Liste:
 
 # Plotly Funktionen
-#functions_plotly.showlineplot(y_axes='Position[cm]', dataframes_list=correct_dataframes_list, title='test')
+functions_plotly.showlineplot(y_axes='Strom[mA]', dataframes_list=correct_dataframes_list_1, title='ACS712')
+functions_plotly.showlineplot(y_axes='Strom[mA]', dataframes_list=correct_dataframes_list_2, title='INA219')
+
+

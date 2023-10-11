@@ -24,6 +24,7 @@ def savetxtaspandas(ordner):
     # es wird die Liste aller dataframes zurückgegeben:
     return dataframes_list
 
+
 # Hier wird die Zeitspalte neu angepasst
 def updatetimestamp(dataframes_list):
     updated_dataframes = []
@@ -52,29 +53,30 @@ def getcorrectposition(dataframes_list,filter):
     return updated_dataframes
 
 
-# todo: diese komplette Berechnung muss nochmals angepasst werden; bzw. die ganze Funktion neu aufgesetzt werden
 # Umrechnung von Strom[bit] in Strom[mA]:
 def getcorrectcurrent(dataframes_list):
+    updated_dataframes = []
     # hier wird der Nullpunkt festgelegt; dabei gibt es einen Unterschied zwischen mit/ohne Filter
     # die Werte müssen noch manuell eingetragen werden, sollten aber später immer gleich sein
-    Nullpunkt_mitFilter = 912
-    Nullpunkt_ohneFilter = 939
-    if filter == True:
-        Nullpunkt = Nullpunkt_mitFilter
-    else:
-        Nullpunkt = Nullpunkt_ohneFilter
+    offset = 2500    #Spannung in mV bei dem keine Stromstärke vorhanden ist; muss nochmals gemessen werden
+    sensitivity = 185   #Sensitivtät des Sensore; bei 5A Version sind das 185mV
+    # Strom[bit] Spalte verrechnen
+    for i, df in enumerate(dataframes_list):
+        spaltenname = 'Strom[bit]'
+        if spaltenname in df.columns:
+            df['Strom[mV]'] = (df['Strom[bit]'] / 1024) * 5000
+            df['Strom[A]'] = (df['Strom[mV]'] - offset) / sensitivity
+            df['Strom[mA]'] = df['Strom[A]'] * 1000
+            updated_dataframes.append(df)
+            #print('vorhanden')
+        else:
+            updated_dataframes.append(df)
+            #print('nicht vorhanden')
+    return updated_dataframes
 
-    try:
-        # Strom[bit] Spalte verrechnen
-        for i, df in enumerate(dataframes_list):
-            df['Strom[mA]'] = (((df['Strom[bit]']/1024)* 5)-2.)/0.185
-        print(f'                    .... done')
-    except Exception:
-        # Für alle unerwarteten Fehler
-        print(f'                    ERROR: Unerwarteter Fehler aufgetreten (Position: {i + 1})')
 
 # Überprüfen der richtigen Spaltennamen; bzw. korrigieren damit alle Spaltennamen stimmen:
-def checkrownames(dataframes_list):
+def checkcolumnnames(dataframes_list):
     updated_dataframes = []
     for df in dataframes_list:
         spalte_2 = df.columns[1]
@@ -95,6 +97,20 @@ def checkrownames(dataframes_list):
     return updated_dataframes
 
 
+# Entfernen der nicht gebrauchten Spalten:
+def deletenotneededcolums(dataframes_list):
+    updated_dataframes = []
+    # Liste der zu löschenden Spalten
+    zu_loeschende_spalten = ['Strom[bit]', 'Position[dauer]', 'Strom[A]', 'Strom[mV]', 'Timestamp[ms]']
+    for df in dataframes_list:
+        for spaltenname in zu_loeschende_spalten:
+            if spaltenname in df.columns:
+                # Die Spalte ist im DataFrame vorhanden, also löschen Sie sie
+                df.drop(spaltenname, axis=1, inplace=True)
+        updated_dataframes.append(df)
+
+    return updated_dataframes
+
 
 
 # GESAMTFUNKTION
@@ -104,16 +120,18 @@ def doallpandasfunction(ordner,filter):
     # 1.: txt-Daten werden in pandas dataframes Listen gespeichert
     dataframes_list = savetxtaspandas(ordner=ordner)
     # 2.: Überprüfen ob Zeile "Strom[mA],Position[dauer],Timestamp[ms]" als Spaltennamen genommen wurde; falls nicht wird dies korrigiert
-    dataframes_list_correctrows = checkrownames(dataframes_list=dataframes_list)
+    dataframes_list_correctrows = checkcolumnnames(dataframes_list=dataframes_list)
     # 3.: Nun wird die Spalte 'Time[s]' hinzugefügt
     dataframes_list_correctrows_correcttime = updatetimestamp(dataframes_list=dataframes_list_correctrows)
     # 4.: Nun wird die Spalte 'Position[cm]' hinzugefügt
     dataframes_list_correctrows_correcttime_correctposition = getcorrectposition(dataframes_list=dataframes_list_correctrows_correcttime,filter=filter)
     # 5.: Nun wird die Spalte 'Strom[bit]' in 'Strom[mA]' umgewandelt
-    # todo: dies muss noch implementiert werden; wird nur verwendet wenn Spalte 'Strom[bit]' vorhanden ist
-    # 6.: Hier können noch weitere Berechnung odr Ähnliches hinzugefügt werden
-    # todo: hier werden weitere Berechnung stehen
-    dataframes_list_correct = dataframes_list_correctrows_correcttime_correctposition
+    dataframes_list_correctrows_correcttime_correctposition_correctcurrent = getcorrectcurrent(dataframes_list=dataframes_list_correctrows_correcttime_correctposition)
+    # 6.: Nun werden die nicht gebrauchten Spalten gelöscht, sodass nur noch folgenden Spalten vorhanden sind:
+    #   'Strom[mA]'  'Position[cm]'  'Time[s]
+    dataframes_list_correctrows_correcttime_correctposition_correctcurrent_correctcolumns = deletenotneededcolums(dataframes_list_correctrows_correcttime_correctposition_correctcurrent)
+    # Nochmals in einfachem Namen speichern:
+    dataframes_list_correct = dataframes_list_correctrows_correcttime_correctposition_correctcurrent_correctcolumns
 
     # Rückgabe der verarbeiteten dataframes Liste
     return dataframes_list_correct
