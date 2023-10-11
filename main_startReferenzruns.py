@@ -1,4 +1,4 @@
-# Main_startReferenzruns:
+# main_startReferenzruns:
 
 # Abfahren von n Referenzfahrten, automatisiert hintereinander
 # aktuell mit Abtastrate von 50 Hz; aufgrund des USS
@@ -9,7 +9,7 @@ import functions
 
 
 # Anzahl der Referenzfahrten:
-n=10
+n=2
 
 prozess = functions.open_Estlcam()
 functions.openReferenzrun()

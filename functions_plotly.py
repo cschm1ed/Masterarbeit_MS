@@ -39,7 +39,6 @@ def showlineplot(y_axes,dataframes_list,title):
         fig.show()
 
 
-
 # Hier wird ein Liniendiagramm mit Strom und Position angezeigt
 def showbothlineplot(dataframes_list,title):
 
