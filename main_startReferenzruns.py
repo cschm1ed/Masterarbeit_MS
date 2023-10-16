@@ -9,7 +9,7 @@ import functions
 
 
 # Anzahl der Referenzfahrten:
-n=2
+n=5
 
 prozess = functions.open_Estlcam()
 functions.openReferenzrun()
