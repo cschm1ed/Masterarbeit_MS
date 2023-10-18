@@ -1,4 +1,7 @@
 import matplotlib.pyplot as plt
+import seaborn as sns
+
+# Nutzung von seaborn (siehe VL KI in der Produktion)
 
 # Hier kann entweder ein Liniendiagramm erzeugt werden (entweder Position[dauer] oder Strom[mA]
 def savelineplot(y_axes,dataframes_list,title):
