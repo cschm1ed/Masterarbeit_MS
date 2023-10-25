@@ -128,4 +128,3 @@ def getallfoldernames():
     return ordner
 
 
-
