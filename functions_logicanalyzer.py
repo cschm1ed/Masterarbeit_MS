@@ -34,15 +34,27 @@ def getcurrent(csv_datei):
     df = pd.read_csv(dateiname)
 
     # Bedingung überprüfen, ob 'data' die Werte '0x04' (unabhängig von der Groß- und Kleinschreibung) enthält (stellt die Read Bedingung dar)
-    bedingung = df['data'].str.contains(r'0x04', na=False, case=False, regex=True) & df['ack'] == True
+    bedingung = df['data'].str.contains(r'0x04', na=False, case=False, regex=True) #& df['ack'] == True
 
-    # Den Index der Zeile mit der erfüllten Bedingung erhalten
+    # Den Index der Zeile mit der erfüllten Bedingung (True) erhalten
     index_zeile = df.index[bedingung]
 
-    # Index der wirklichen Daten berechnen und zusammenfügen
-    index1 = index_zeile + 3
-    index2 = index_zeile + 4
-    merged_index = index1.union(index2)
+    # Prüfung der nächsten Zeilen
+    next_index = index_zeile + 3
+    new_bedingung = df['type'].eq('data').loc[next_index]
+
+    if new_bedingung.all():
+        # Index der wirklichen Daten berechnen und zusammenfügen
+        index1 = index_zeile + 3
+        index2 = index_zeile + 4
+        merged_index = index1.union(index2)
+    else:
+        false_indexes = new_bedingung.index[new_bedingung == False]
+        false_indexes_neu = false_indexes-3
+        index_corect = index_zeile.difference(false_indexes_neu)
+        index1 = index_corect + 3
+        index2 = index_corect + 4
+        merged_index = index1.union(index2)
 
     # Daten Zeilen zusammenfügen
     data_zeilen = df.loc[merged_index]
@@ -62,6 +74,10 @@ def getcurrent(csv_datei):
 
     # Ergebnis DataFrame mit den Spalten 'time[s]' und 'data_bin' erstellen (noch komplett leer)
     ergebnis_df = pd.DataFrame(columns=['time[s]', 'data_bin'])
+
+    # Für Errors:
+    #print(data_new)
+    #data_new.to_csv('errors/vergleichlogicarduino.txt', sep=',', index=False)
 
     # for-Schleife zum Hinzufügen von Daten
     for i in range(0,anzahl_data_new-1,2):

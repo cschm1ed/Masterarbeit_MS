@@ -11,4 +11,4 @@ import functions
 dauer = 10
 
 
-functions.startDatalogging_115200(name='Leerlauf_Schaltschrank_on',erfassungsdauer=dauer,iteration=1)
+functions.startDatalogging_115200(name='Leerlauf_Schaltschrank_on_VergleichLogicAnalyzer',erfassungsdauer=dauer,iteration=1)
