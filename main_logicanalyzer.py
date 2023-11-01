@@ -7,8 +7,11 @@ from plotly.subplots import make_subplots
 #dateiname = 'digital_table_delay(2)'
 #dateiname = 'digital_table_delay(2)_115200'
 #dateiname = 'digital_table_delay(5)_115200'
-dateiname = 'digital_VergleichArduino'
-dateiname = 'digital_referencerun1'
+#dateiname = 'digital_VergleichArduino'
+#eateiname = 'digital_referencerun1'
+#dateiname ='digital_INA219_VL053L0X'
+#dateiname = '20231101_12_19'
+dateiname = 'i2c_export'
 
 ergebnis_df = functions_logicanalyzer.getcurrent(csv_datei=dateiname)
 

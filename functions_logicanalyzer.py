@@ -1,4 +1,12 @@
 import pandas as pd
+from saleae import automation
+import os
+import os.path
+import subprocess
+from datetime import datetime
+from saleae.automation import RadixType
+from saleae.automation import DataTableExportConfiguration
+
 
 # Funktionen zu Berechnung zwischen hex, bin, dez:
 
@@ -107,4 +115,65 @@ def getcurrent(csv_datei):
 
     #Rückgabe des ergebnis_df
     return ergebnis_df
+
+
+# Funktionen zum Steuern von Logic 2:
+# Code noch weiter anpassen (damit Trigger funktioniert + Endzeit festgelegt werden kann in Funktionsaufruf + Speicherort der cs Datei zurückgegeben wird)
+def startlogic2():
+    # https://saleae.github.io/logic2-automation/
+
+    # Öffnet Logic 2 Anwendung
+    exe_datei_pfad = 'C:\Program Files\Logic\Logic.exe'
+    prozess = subprocess.Popen([exe_datei_pfad])
+
+    with automation.Manager.connect(port=10430) as manager:
+        device_configuration = automation.LogicDeviceConfiguration(
+            enabled_digital_channels=[0, 1, 2],
+            digital_sample_rate=50_000_000,
+            # digital_threshold_volts=3.3,
+        )
+
+        # Record 5 seconds of data before stopping the capture
+        capture_configuration = automation.CaptureConfiguration(
+            capture_mode=automation.TimedCaptureMode(duration_seconds=5.0)
+        )
+
+        with manager.start_capture(
+                device_id='A60D1D2452ABF025',
+                # device_id='F4241', # für Demo Version
+                device_configuration=device_configuration,
+                capture_configuration=capture_configuration) as capture:
+            # Wait until the capture has finished
+            # This will take about 5 seconds because we are using a timed capture mode
+            capture.wait()
+
+            # Add an analyzer to the capture
+            i2c_analyzer = capture.add_analyzer('I2C', label=f'I2C', settings={
+                'SDA': 1,
+                'SCL': 0
+            })
+
+            # Ordner erstellen (in welchem die Daten gespeichert werden
+            ordnername = (
+                "C:\\Users\\maxi1\\Documents\\UNI MASTER KIT\\#MASTERARBEIT\\05 Sonstige Dokumente\\PycharmProjects\\Masterarbeit_Schubert\\raw_data_sorted\\test_LogicAnalyzer")
+            output_dir = os.path.join(ordnername, f'digital_output-{datetime.now().strftime("%Y-%m-%d_%H-%M-%S")}')
+            os.makedirs(output_dir)
+
+            # Konfiguration von export Analyzer
+            radixtype = RadixType.HEXADECIMAL
+            config_export_analyzer = DataTableExportConfiguration(analyzer=i2c_analyzer, radix=radixtype)
+            # Export von I2C Analyzer Daten
+            analyzer_export_filepath = os.path.join(output_dir, 'i2c_export.csv')
+            capture.export_data_table(
+                filepath=analyzer_export_filepath,
+                analyzers=[i2c_analyzer, config_export_analyzer]
+            )
+
+
+            # Export von raw digital data
+            # capture.export_raw_data_csv(directory=output_dir, digital_channels=[0, 1, 2])
+
+            # Speichern der capture Datei
+            capture_filepath = os.path.join(output_dir, 'capture.sal')
+            capture.save_capture(filepath=capture_filepath)
 
