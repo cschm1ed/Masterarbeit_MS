@@ -33,13 +33,13 @@ def hex_to_bin(hex_string):
         return None  # Oder eine Ausnahme auslösen oder den Fehler auf geeignete Weise behandeln
 
 # Funktion zum Einlesen + dekodieren der Stromstärke aus dem Logic 2 Export (digital_table.csv):
-def getcurrent(csv_datei):
+def getcurrent(dateipfad):
 
     # Dateipfad zur CSV-Datei
-    dateiname = 'raw_data_sorted/test_LogicAnalyzer/' + csv_datei + '.csv'
+    #dateiname = 'raw_data_sorted/test_LogicAnalyzer/' + csv_datei + '.csv'
 
     # Einlesen in ein Pandas dataframe
-    df = pd.read_csv(dateiname)
+    df = pd.read_csv(dateipfad)
 
     # Bedingung überprüfen, ob 'data' die Werte '0x04' (unabhängig von der Groß- und Kleinschreibung) enthält (stellt die Read Bedingung dar)
     bedingung = df['data'].str.contains(r'0x04', na=False, case=False, regex=True) #& df['ack'] == True
@@ -119,7 +119,7 @@ def getcurrent(csv_datei):
 
 # Funktionen zum Steuern von Logic 2:
 # Code noch weiter anpassen (damit Trigger funktioniert + Endzeit festgelegt werden kann in Funktionsaufruf + Speicherort der cs Datei zurückgegeben wird)
-def startlogic2():
+def startlogic2(time):
     # https://saleae.github.io/logic2-automation/
 
     # Öffnet Logic 2 Anwendung
@@ -128,21 +128,27 @@ def startlogic2():
 
     with automation.Manager.connect(port=10430) as manager:
         device_configuration = automation.LogicDeviceConfiguration(
-            enabled_digital_channels=[0, 1, 2],
+            enabled_digital_channels=[0, 1, 2, 3],
             digital_sample_rate=50_000_000,
             # digital_threshold_volts=3.3,
         )
 
         # Record 5 seconds of data before stopping the capture
-        capture_configuration = automation.CaptureConfiguration(
-            capture_mode=automation.TimedCaptureMode(duration_seconds=5.0)
+        capture_configuration_timecapture = automation.CaptureConfiguration(
+            capture_mode=automation.TimedCaptureMode(duration_seconds=time)
+        )
+
+        # Record 60 seconds of data after trigger of channel 3
+        triggertype = automation.DigitalTriggerType.RISING
+        capture_configuration_trigger = automation.CaptureConfiguration(
+            capture_mode=automation.DigitalTriggerCaptureMode(trigger_channel_index=3, trigger_type=triggertype, trim_data_seconds=2, after_trigger_seconds=time)
         )
 
         with manager.start_capture(
-                device_id='A60D1D2452ABF025',
-                # device_id='F4241', # für Demo Version
+                #device_id='A60D1D2452ABF025',
+                device_id='F4241', # für Demo Version
                 device_configuration=device_configuration,
-                capture_configuration=capture_configuration) as capture:
+                capture_configuration=capture_configuration_trigger) as capture:
             # Wait until the capture has finished
             # This will take about 5 seconds because we are using a timed capture mode
             capture.wait()
@@ -176,4 +182,7 @@ def startlogic2():
             # Speichern der capture Datei
             capture_filepath = os.path.join(output_dir, 'capture.sal')
             capture.save_capture(filepath=capture_filepath)
+
+        speicherort_csv_file = output_dir + '\i2c_export.csv'
+    return speicherort_csv_file
 

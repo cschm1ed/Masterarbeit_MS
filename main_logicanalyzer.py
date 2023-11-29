@@ -11,9 +11,13 @@ from plotly.subplots import make_subplots
 #eateiname = 'digital_referencerun1'
 #dateiname ='digital_INA219_VL053L0X'
 #dateiname = '20231101_12_19'
-dateiname = 'i2c_export'
+#dateiname = 'i2c_export'
 
-ergebnis_df = functions_logicanalyzer.getcurrent(csv_datei=dateiname)
+dateipfad = functions_logicanalyzer.startlogic2(60)
+
+print(dateipfad)
+
+ergebnis_df = functions_logicanalyzer.getcurrent(dateipfad=dateipfad)
 
 print(ergebnis_df)
 
@@ -26,7 +30,7 @@ print(ergebnis_df)
 # Grafische Veranschaulichung:
 
 # Erstellen Sie ein Liniendiagramm mit den entsprechenden x- und y-Spalten aus dem DataFrame
-fig = px.line(ergebnis_df, x='time[s]', y='current[mA]', title=dateiname)
+fig = px.line(ergebnis_df, x='time[s]', y='current[mA]', title=dateipfad)
 # Hier werden weitere Anpassungen am Diagramm vorgenommen
 # Achsentitel hinzufügen
 fig.update_xaxes(title_text='Zeit [s]')
