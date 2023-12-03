@@ -8,6 +8,7 @@ def getposition(df):
     for i in range(len(df) - 1):
         current = df.iloc[i + 1][['Channel 4', 'Channel 5']].values
         previous = df.iloc[i][['Channel 4', 'Channel 5']].values
+        time = df.loc[i, 'Time[s]']
         # Ohne NoChanges & Errors
         if (current == (0, 0)).all() and (previous == (0, 1)).all():
             counter += 1
