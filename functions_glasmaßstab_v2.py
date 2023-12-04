@@ -2,6 +2,7 @@ import pandas as pd
 
 
 def getposition(df):
+    ergebnis_df = pd.DataFrame(columns=['Time_[s]', 'Position_[mm]'])
     counter = 0
     nochange = 0
     errors = 0
@@ -50,7 +51,9 @@ def getposition(df):
         if (current == (1, 1)).all() and (previous == (0, 0)).all():
             errors += 1
 
-    return counter, nochange, errors
+        ergebnis_df.loc[i] = [time, counter * 0.005]
+
+    return ergebnis_df, nochange, errors
 
 # Dateipfad zur CSV-Datei
 # Richtung Modell_Stecker

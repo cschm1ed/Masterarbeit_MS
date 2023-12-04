@@ -1,14 +1,10 @@
 # main_VergleichSensoren:
-import pandas as pd
-import matplotlib.pyplot as plt
 
 # hier werden die verschiedenen Sensoren verglichen
 
 # Import der ganzen Funktionen:
 import functions_pandas
-import functions
 import functions_plotly
-import functions_matplotlib
 
 # Aktuell: Vergleich der Stromsensoren
 

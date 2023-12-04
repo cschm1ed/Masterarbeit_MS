@@ -5,7 +5,7 @@
 # aktuell mit Abtastrate von 50 Hz; aufgrund des USS
 
 # Import der ganzen Funktionen:
-import functions
+import functions_general
 
 # Dauer der Referenzfahrt (in Sekunden):
 dauer = 10

@@ -4,6 +4,6 @@
 
 # Import der ganzen Funktionen:
 import time
-import functions
+import functions_general
 
 

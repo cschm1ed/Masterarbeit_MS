@@ -2,11 +2,6 @@
 # test_pandas_plotly:
 # .py Datei zum Testen von neuen plotly-Funktionen
 
-import functions_pandas
-import functions
-import functions_plotly
-import functions_matplotlib
-
 # Aktuell: Vergleich der Stromsensoren
 
 # !!!!

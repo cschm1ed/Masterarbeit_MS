@@ -5,23 +5,24 @@
 
 # Import der ganzen Funktionen:
 import time
-import functions
+import functions_general
 
 
 # Anzahl der Referenzfahrten:
 n=1
 
-prozess = functions.open_Estlcam()
-functions.openReferenzrun()
+prozess = functions_general.open_Estlcam()
+functions_general.openReferenzrun()
 
 print("--- Start Referenzfahrt: ---")
-functions.sentMail('maxi11696@googlemail.com',iteration=0,numberofdrives=n)
+functions_general.sentMail('maxi11696@googlemail.com',iteration=0,numberofdrives=n)
 for i in range(1,n+1):
     name = "Referenzfahrt_" + str(i)
-    functions.startDatalogging_115200(name=name,erfassungsdauer=60,iteration=i)
+    # hier muss neue Funktion angepasst werden
+    functions_general.startDatalogging_115200(name=name,erfassungsdauer=60,iteration=i)
     print("     ...." + name + " done")
     if i % 5 == 0:
-        functions.sentMail('maxi11696@googlemail.com',iteration=i,numberofdrives=n)
+        functions_general.sentMail('maxi11696@googlemail.com',iteration=i,numberofdrives=n)
     time.sleep(10)
 
 prozess.terminate()
