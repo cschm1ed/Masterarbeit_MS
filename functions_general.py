@@ -64,7 +64,6 @@ def openReferenzrun():
 # Funktion zum Starten der Referenzfahrt:
 def startReferenzrun():
     time.sleep(1)
-    print("--- Start Referenzfahrt:")
     pyautogui.click(1605, 1057)
 
 

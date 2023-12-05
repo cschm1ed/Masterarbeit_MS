@@ -23,7 +23,7 @@ def startLogic2():
 
 
 # Funktion zum Starten der Datenaufnahme für die Dauer dauer:
-def recordLogic2Data(dauer):
+def recordLogic2Data(dauer, motor, getriebe):
     # Wichtige Infos:
     # https://saleae.github.io/logic2-automation/
 
@@ -64,11 +64,21 @@ def recordLogic2Data(dauer):
             })
 
             # Ordner erstellen (in welchem die Daten gespeichert werden)
-            # todo: hier noch neu strukturieren bzw. die Namen anpassen
             ordnername = (
-                "C:\\Users\\maxi1\\Documents\\UNI MASTER KIT\\#MASTERARBEIT\\05 Sonstige Dokumente\\PycharmProjects\\Masterarbeit_Schubert\\raw_data_sorted\\test_LogicAnalyzer")
+                "C:\\Users\\maxi1\\Documents\\UNI MASTER KIT\\#MASTERARBEIT\\05 Sonstige Dokumente\\PycharmProjects\\Masterarbeit_Schubert\\raw_data_sorted")
             output_dir = os.path.join(ordnername, f'digital_output-{datetime.now().strftime("%Y-%m-%d_%H-%M-%S")}')
             os.makedirs(output_dir)
+
+            # txt Datei mit Motor-, Getriebe-typ, usw. zu Ordner hinzufügen
+            txt_file_path = os.path.join(output_dir, 'used_parts.txt')
+
+            # Öffnen der Datei im Schreibmodus ('w' für Schreiben)
+            with open(txt_file_path, 'w') as file:
+                file.write('Used parts:\n\n')
+                file.write('Motor:\t\t' + motor + '\n')
+                file.write('Getriebe:\t' + getriebe + '\n\n\n')
+                file.write(datetime.now().strftime("%Y-%m-%d_%H-%M-%S"))
+
 
             # Konfiguration des export-Analyzer
             radixtype = RadixType.HEXADECIMAL
@@ -82,6 +92,7 @@ def recordLogic2Data(dauer):
 
             # Export von raw_digital_data für die Channel 4 & 5
             capture.export_raw_data_csv(directory=output_dir, digital_channels=[4, 5])
+
 
             # Speichern der capture Datei
             #capture_filepath = os.path.join(output_dir, 'capture.sal')
