@@ -1,11 +1,12 @@
+# ----
+# FUNKTIONEN ZUR STEUERUNG VON ESTLCAM (DER REFERENZFAHRTEN)
+# ----
+
 import subprocess
 import pyautogui
 import time
 import pygetwindow as gw
-import serial
 import datetime
-import os
-import pandas as pd
 
 # für Mail:
 from email.mime.multipart import MIMEMultipart
@@ -13,8 +14,8 @@ from email.mime.text import MIMEText
 import smtplib
 
 
-# Hier wird Estlcam und der CNC-Controller geöffnet:
-def open_Estlcam():
+# Funktion zum Öffnen von Estlcam & des CNC-Controller:
+def openEstlcam():
     # Pfad der Estlcam.exe Datei
     exe_datei_pfad = "C:\\Users\\maxi1\\Documents\\UNI MASTER KIT\\#MASTERARBEIT\\05 Sonstige Dokumente\\Estlcam11\\Estlcam.exe"
     # Die ausführbare Datei öffnen
@@ -34,9 +35,10 @@ def open_Estlcam():
     # Fenster maximieren
     aktives_fenster = gw.getActiveWindow()
     aktives_fenster.maximize()
+    print('Funktion "openEstlcam" abgeschlossen. ---')
     return prozess
 
-# Hier wird der CNC-Controller geöffnet:
+# Funktion zum Laden der Referenzfahrt:
 def openReferenzrun():
     time.sleep(3)
     aktives_fenster = gw.getActiveWindow()
@@ -52,20 +54,21 @@ def openReferenzrun():
         aktives_fenster.moveTo(0, 0)
         time.sleep(3)
         pyautogui.doubleClick(750, 160)
-        time.sleep(8)
-        pyautogui.click(1150, 660)
-        time.sleep(4)
-        pyautogui.click(1120,655)
+        time.sleep(12)
+        pyautogui.click(1160, 660)
+        time.sleep(3)
+        print('Funktion "openReferenzrun" abgeschlossen. ---')
     else:
-        print("CNC-Controller nicht richtig geöffnet.")
+        print("Fehler: CNC-Controller nicht richtig geöffnet. ---")
 
-#Hier wird die Referenzfahrt gestartet:
-def startRunningCNC():
+# Funktion zum Starten der Referenzfahrt:
+def startReferenzrun():
     time.sleep(1)
+    print("--- Start Referenzfahrt:")
     pyautogui.click(1605, 1057)
 
 
-# Mail schicken:
+# Funktion zum automatisierten Mails schicken:
 def sentMail(recieveradress,iteration,numberofdrives):
     now = datetime.datetime.now()
     mail_content = now.strftime("%m/%d/%Y, %H:%M:%S") + ' Referenzfahrt: ' + str(iteration) + '/' + str(numberofdrives)

@@ -1,28 +1,36 @@
-# main_startReferenzruns:
+# ----
+# MAIN: STARTEN VON n-REFERENZFAHRTEN
+# ----
 
-# Abfahren von n Referenzfahrten, automatisiert hintereinander
-# aktuell mit Abtastrate von 50 Hz; aufgrund des USS
-
-# Import der ganzen Funktionen:
 import time
 import functions_general
+import functions_logicanalyzer
 
+# Abfahren von n Referenzfahrten, automatisiert hintereinander
+# Hauptanzeige muss der Laptop sein (nicht der Bildschirm)
 
 # Anzahl der Referenzfahrten:
-n=1
+n=3
 
-prozess = functions_general.open_Estlcam()
+# Öffnen von Logic2 & Estlcam
+prozess_Logic2 = functions_logicanalyzer.startLogic2()
+prozess_Estlcam = functions_general.openEstlcam()
 functions_general.openReferenzrun()
 
-print("--- Start Referenzfahrt: ---")
+# Mail beim Start senden
 functions_general.sentMail('maxi11696@googlemail.com',iteration=0,numberofdrives=n)
-for i in range(1,n+1):
-    name = "Referenzfahrt_" + str(i)
-    # hier muss neue Funktion angepasst werden
-    functions_general.startDatalogging_115200(name=name,erfassungsdauer=60,iteration=i)
-    print("     ...." + name + " done")
-    if i % 5 == 0:
+# durch Anzahl der Referenzfahrten iterieren
+for i in range(1, n+1):
+    # Start der Datenaufnahme und der Referenzfahrt
+    functions_logicanalyzer.recordLogic2Data(dauer=50)
+    print("     .... Referenzfahrt " + str(i) + "/" + str(n) + " done")
+    # Mail senden
+    if i % 5 == 0 or i == n:
         functions_general.sentMail('maxi11696@googlemail.com',iteration=i,numberofdrives=n)
+    # Pause zum Abkühlen von Motor & Spindel
     time.sleep(10)
 
-prozess.terminate()
+print("Referenzfahrten (" + str(n) + ") erfolgreich abgeschlossen. ---")
+# Schließen von Logic2 & Estlcam
+prozess_Estlcam.terminate()
+prozess_Logic2.terminate()
