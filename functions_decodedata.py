@@ -116,34 +116,44 @@ def decodeCurrent(dateipfad):
 # Funktion zum Einlesen + Dekodieren der Position aus dem Logic 2 Export_Raw (digital.csv)(jedoch Dataframe von .csv Datei muss eingelesen werden):
 
 def decodePosition(df):
-    ergebnis_df = pd.DataFrame(columns=['Time_[s]', 'Position_[mm]'])
+    array_channel4 = df['Channel 4'].values
+    array_channel5 = df['Channel 5'].values
+    array_channeltime = df['Time [s]'].values
+    array_position = []
+    array_time = []
     counter = 0
-    for i in range(len(df) - 1):
-        current = df.iloc[i + 1][['Channel 4', 'Channel 5']].values
-        previous = df.iloc[i][['Channel 4', 'Channel 5']].values
-        time = df.loc[i, 'Time [s]']
+
+    from tqdm import tqdm  # Zur Anzeige der verbleibenden Dauer
+    for i in tqdm(range(len(array_channel4) - 1)):
+        current = [array_channel4[i + 1], array_channel5[i + 1]]
+        previous = [array_channel4[i], array_channel5[i]]
+        time_neu = array_channeltime[i]
 
         # Ohne NoChanges & Errors
-        if (current == (0, 0)).all() and (previous == (0, 1)).all():
+        if (current == [0, 0]) and (previous == [0, 1]):
             counter -= 1
-        if (current == (0, 0)).all() and (previous == (1, 0)).all():
+        if (current == [0, 0]) and (previous == [1, 0]):
             counter += 1
 
-        if (current == (0, 1)).all() and (previous == (0, 0)).all():
+        if (current == [0, 1]) and (previous == [0, 0]):
             counter += 1
-        if (current == (0, 1)).all() and (previous == (1, 1)).all():
+        if (current == [0, 1]) and (previous == [1, 1]):
             counter -= 1
 
-        if (current == (1, 0)).all() and (previous == (0, 0)).all():
+        if (current == [1, 0]) and (previous == [0, 0]):
             counter -= 1
-        if (current == (1, 0)).all() and (previous == (1, 1)).all():
+        if (current == [1, 0]) and (previous == [1, 1]):
             counter += 1
 
-        if (current == (1, 1)).all() and (previous == (0, 1)).all():
+        if (current == [1, 1]) and (previous == [0, 1]):
             counter += 1
-        if (current == (1, 1)).all() and (previous == (1, 0)).all():
+        if (current == [1, 1]) and (previous == [1, 0]):
             counter -= 1
 
-        ergebnis_df.loc[i] = [time, counter*0.005]
+        array_position.append(counter * 0.005)
+        array_time.append(time_neu)
+
+    data = {'time_[s]': array_time, 'position_[mm]': array_position}
+    ergebnis_df = pd.DataFrame(data)
 
     return ergebnis_df

@@ -1,43 +1,32 @@
 import pandas as pd
 from datetime import datetime
 import functions_decodedata
+import matplotlib.pyplot as plt
+import os
 
+verzeichnis_pfad = 'raw_data_sorted/'  # Passe den Pfad zu deinem Verzeichnis an
 
+ordner_liste = next(os.walk(verzeichnis_pfad))[1]
 
-# Dateipfad zur CSV-Datei
-dateinamen = [
+print(ordner_liste)
 
-    'raw_data_sorted/test_LogicAnalyzer/digital.csv',
-    'raw_data_sorted/test_LogicAnalyzer/4cm.csv',
-    'raw_data_sorted/test_LogicAnalyzer/-4cm.csv',
-    'raw_data_sorted/test_LogicAnalyzer/20cm_1.csv',
-    'raw_data_sorted/test_LogicAnalyzer/-20cm_1.csv',
-    'raw_data_sorted/test_LogicAnalyzer/mehrals4cm.csv',
-    'raw_data_sorted/test_LogicAnalyzer/-mehrals4cm.csv',
-    'raw_data_sorted/test_LogicAnalyzer/20cm_2.csv',
-    'raw_data_sorted/test_LogicAnalyzer/-20cm_2.csv',
-    'raw_data_sorted/test_LogicAnalyzer/52cm.csv',
-    'raw_data_sorted/test_LogicAnalyzer/-52cm.csv',
-    'raw_data_sorted/test_LogicAnalyzer/-52cm_2.csv'
-]
+zu_überspringender_ordner = '#alt'  # Ersetze dies durch den Namen des Ordners, den du überspringen möchtest
+for ordner in ordner_liste:
+    if ordner != zu_überspringender_ordner:
+        dateiname = 'raw_data_sorted/' + ordner + '/i2c_export.csv'
+        print(dateiname)
 
-for dateiname in dateinamen:
-    aktuelle_zeit = datetime.now().strftime('%H:%M:%S')
-    print('---- Start: ' + str(aktuelle_zeit))
-    print(dateiname)
-
-    # Einlesen in ein Pandas DataFrame
-    df = pd.read_csv(dateiname)
-
-    # Aufrufen der Funktionen
-    result = functions_decodedata.decodePosition(df)
-
-    # Ausgabe des Ergebnis Dataframes
-    print(result)
-
-    aktuelle_zeit = datetime.now().strftime('%H:%M:%S')
-    print('---- Ende: ' + str(aktuelle_zeit) + ' ----')
-
-
-
+        try:
+            result = functions_decodedata.decodeCurrent(dateiname)
+            print(result)
+            # Liniendiagramm (Line Plot)
+            plt.plot(result['time[s]'], result['current[mA]'], marker='None', linestyle='-', color='b')  # 'o' für Marker, '-' für Linienstil, 'b' für die Farbe blau
+            plt.xlabel('time[s]')
+            plt.ylabel('current[mA]')
+            plt.title('Test_' + dateiname)
+            plt.grid(True)
+            plt.show()
+        except Exception as e:
+            print(f"Fehler beim Verarbeiten des Ordners '{ordner}': {e}")
+            continue  # Springe zum nächsten Ordner, auch wenn ein Fehler auftritt
 
