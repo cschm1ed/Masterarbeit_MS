@@ -3,6 +3,7 @@
 # ----
 
 import pandas as pd
+from tqdm import tqdm  # Zur Anzeige der verbleibenden Dauer in for-Schleifen
 
 # Funktionen zu Berechnung zwischen hex, bin, dez:
 
@@ -31,9 +32,7 @@ def hex_to_bin(hex_string):
 
 # Funktion zum Einlesen + Dekodieren der Stromstärke aus dem Logic 2 Export (digital_table.csv):
 def decodeCurrent(dateipfad):
-
-    # Dateipfad zur CSV-Datei
-    #dateiname = 'raw_data_sorted/test_LogicAnalyzer/' + csv_datei + '.csv'
+    print('\t --- Dekodierung Current:\n')
 
     # Einlesen in ein Pandas dataframe
     df = pd.read_csv(dateipfad)
@@ -77,15 +76,15 @@ def decodeCurrent(dateipfad):
     # Länge von data_new berechnen
     anzahl_data_new = len(data_new)
 
-    # Ergebnis DataFrame mit den Spalten 'time[s]' und 'data_bin' erstellen (noch komplett leer)
-    ergebnis_df = pd.DataFrame(columns=['time[s]', 'data_bin'])
+    # Ergebnis DataFrame mit den Spalten 'time_[s]' und 'data_bin' erstellen (noch komplett leer)
+    ergebnis_df = pd.DataFrame(columns=['time_[s]', 'data_bin'])
 
     # Für Errors:
     #print(data_new)
     #data_new.to_csv('errors/vergleichlogicarduino.txt', sep=',', index=False)
 
     # for-Schleife zum Hinzufügen von Daten
-    for i in range(0,anzahl_data_new-1,2):
+    for i in tqdm(range(0,anzahl_data_new-1,2)):
         # Timestamp wird von ersten Datenpaket genommen
         time = data_new.loc[i, 'start_time']
         # Auslesen des ersten Register-Datenpakets
@@ -104,8 +103,12 @@ def decodeCurrent(dateipfad):
     current_LSB = 1e-4
 
     # Berechnung von current in A und mA
-    ergebnis_df['current[A]'] = ergebnis_df['data_dez'] * current_LSB
-    ergebnis_df['current[mA]'] = ergebnis_df['current[A]'] * 1000
+    ergebnis_df['current_[A]'] = ergebnis_df['data_dez'] * current_LSB
+    ergebnis_df['current_[mA]'] = ergebnis_df['current_[A]'] * 1000
+
+    # Löschen von unwichtigen Spalten
+    columns_to_delete = ['data_bin', 'data_dez', 'current_[A]']
+    ergebnis_df = ergebnis_df.drop(columns_to_delete, axis=1)
 
     # Ausgabe des ergebnis_df
     #print(ergebnis_df)
@@ -113,9 +116,13 @@ def decodeCurrent(dateipfad):
     #Rückgabe des ergebnis_df
     return ergebnis_df
 
-# Funktion zum Einlesen + Dekodieren der Position aus dem Logic 2 Export_Raw (digital.csv)(jedoch Dataframe von .csv Datei muss eingelesen werden):
 
-def decodePosition(df):
+# Funktion zum Einlesen + Dekodieren der Position aus dem Logic 2 Export_Raw (digital.csv)(jedoch Dataframe von .csv Datei muss eingelesen werden):
+def decodePosition(dateipfad):
+    print('\t --- Dekodierung Position:\n')
+    # Einlesen in ein Pandas dataframe
+    df = pd.read_csv(dateipfad)
+
     array_channel4 = df['Channel 4'].values
     array_channel5 = df['Channel 5'].values
     array_channeltime = df['Time [s]'].values
@@ -123,8 +130,7 @@ def decodePosition(df):
     array_time = []
     counter = 0
 
-    from tqdm import tqdm  # Zur Anzeige der verbleibenden Dauer
-    for i in tqdm(range(len(array_channel4) - 1)):
+    for i in tqdm(range(len(array_channel4) - 1)): # tqdm: Zur Anzeige der verbleibenden Dauer
         current = [array_channel4[i + 1], array_channel5[i + 1]]
         previous = [array_channel4[i], array_channel5[i]]
         time_neu = array_channeltime[i]

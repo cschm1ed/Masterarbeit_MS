@@ -75,8 +75,8 @@ def recordLogic2Data(dauer, motor, getriebe):
             # Öffnen der Datei im Schreibmodus ('w' für Schreiben)
             with open(txt_file_path, 'w') as file:
                 file.write('Used parts:\n\n')
-                file.write('Motor:\t\t' + motor + '\n')
-                file.write('Getriebe:\t' + getriebe + '\n\n\n')
+                file.write('Motor: ' + motor + '\n')
+                file.write('Getriebe: ' + getriebe + '\n\n\n')
                 file.write(datetime.now().strftime("%Y-%m-%d_%H-%M-%S"))
 
 

@@ -7,6 +7,8 @@ import pyautogui
 import time
 import pygetwindow as gw
 import datetime
+import functions_decodedata
+import os
 
 # für Mail:
 from email.mime.multipart import MIMEMultipart
@@ -89,6 +91,26 @@ def sentMail(recieveradress,iteration,numberofdrives):
     text = message.as_string()
     session.sendmail(sender_address, receiver_address, text)
     session.quit()
+
+
+# Funktion zur Erstellung der Dateien current.csv & position.csv
+def createFilesCurrentPosition():
+
+    ordner_liste = [d for d in os.listdir("raw_data_sorted") if os.path.isdir(os.path.join("raw_data_sorted", d)) and "digital_output" in d]
+
+    for ordner in ordner_liste:
+        verzeichnis = 'raw_data_sorted\\' + ordner
+        print('--- ' + verzeichnis + ':')
+
+        verzeichnis_position = os.path.join(verzeichnis, 'digital.csv')
+        df_position = functions_decodedata.decodePosition(verzeichnis_position)
+        df_position.to_csv(verzeichnis + '\\position.csv', index=False)
+
+        verzeichnis_current = os.path.join(verzeichnis, 'i2c_export.csv')
+        df_current = functions_decodedata.decodeCurrent(verzeichnis_current)
+        df_current.to_csv(verzeichnis + '\\current.csv', index=False)
+
+    print('Für alle Ordner in "raw_data_sorted" wurden die Dateien current.csv und position.csv erstellt.')
 
 
 
