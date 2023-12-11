@@ -1,5 +1,5 @@
 # ----
-# FUNKTIONEN ZUR STEUERUNG VON ESTLCAM (DER REFERENZFAHRTEN)
+# FUNKTIONEN ZUR STEUERUNG VON ESTLCAM (DER REFERENZFAHRTEN) & WEITERE ALLGEMEINE FUNKTIONEN
 # ----
 
 import subprocess
@@ -9,12 +9,12 @@ import pygetwindow as gw
 import datetime
 import functions_decodedata
 import os
+import shutil
 
 # für Mail:
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 import smtplib
-
 
 # Funktion zum Öffnen von Estlcam & des CNC-Controller:
 def openEstlcam():
@@ -110,8 +110,67 @@ def createFilesCurrentPosition():
         df_current = functions_decodedata.decodeCurrent(verzeichnis_current)
         df_current.to_csv(verzeichnis + '\\current.csv', index=False)
 
-    print('Für alle Ordner in "raw_data_sorted" wurden die Dateien current.csv und position.csv erstellt.')
+    print('--- Für alle Ordner in "raw_data_sorted" wurden die Dateien current.csv und position.csv erstellt.')
 
+# Funktion zur finalen Datenerstellung
+def createFinalFiles():
+    ordner_liste = [d for d in os.listdir("raw_data_sorted") if
+                        os.path.isdir(os.path.join("raw_data_sorted", d)) and "digital_output" in d]
+
+    # Checken, ob die dateinamen in den Ordnern vorhanden sind
+    for ordner in ordner_liste:
+        verzeichnis = 'raw_data_sorted\\' + ordner
+        dateinamen = ['current.csv', 'position.csv', 'i2c_export.csv', 'digital.csv', 'used_parts.txt']
+        alle_vorhanden = True
+        for dateiname in dateinamen:
+            pfad_zur_datei = os.path.join(verzeichnis, dateiname)
+            if not os.path.isfile(pfad_zur_datei):
+                alle_vorhanden = False
+                break
+
+
+        # Zugriff auf Daten der Messung
+        with open(verzeichnis + '\\used_parts.txt', 'r') as file:
+            lines = file.readlines()
+            txt_name_motor_list = lines[2].split(' ',1)
+            txt_name_getriebe_list = lines[3].split(' ',1)
+            txt_time = lines[6]
+
+            txt_name_motor = txt_name_motor_list[1]
+            txt_name_getriebe = txt_name_getriebe_list[1]
+
+        print('--- ' + verzeichnis + ':')
+        if alle_vorhanden:
+            print('\t.... Dateien ("current.csv", "position.csv", "i2c_export.csv", "digital.csv", "used_parts.txt") sind vorhanden.')
+        else:
+            print('\t.... Fehler: Nicht alle Dateien sind vorhanden.')
+
+        # Dateien 'current.csv', 'position.csv', 'used_parts.txt' in neuen Ordner (mit Name txt_time) in Ordner #fertig kopieren
+        ziel_pfad = 'raw_data_sorted\\#fertig\\' + txt_time # Ersetze dies durch den Pfad des neuen Ordners, den du erstellen möchtest
+
+        if not os.path.exists(ziel_pfad):
+            os.makedirs(ziel_pfad)
+            print(f"\t.... Ordner {ziel_pfad} wurde erfolgreich erstellt.")
+        else:
+            print(f"\t.... Ordner {ziel_pfad} existiert bereits.")
+
+        dateien = ['current.csv', 'position.csv', 'used_parts.txt']  # Liste der Dateinamen
+
+        for datei in dateien:
+            quelle_datei_pfad = os.path.join(verzeichnis, datei)
+            ziel_datei_pfad = os.path.join(ziel_pfad, datei)
+            shutil.copyfile(quelle_datei_pfad, ziel_datei_pfad)
+        print('\t.... Dateien ("current.csv", "position.csv", "used_parts.txt") wurden erfolgreich hinzugefügt.')
+
+        # Ordner 'digital_output_' in #alt bewegen
+        pfad_ordner_alt = 'raw_data_sorted\\#alt'
+        shutil.move(verzeichnis, pfad_ordner_alt)
+        print('\t.... Ordnern wurde in den Pfad #alt verschoben.')
+
+    print('--- Für alle Ordner in "raw_data_sorted" wurden #fertig Ordner erstellt, sowie die Ordner in den Pfad #alt verschoben.')
+
+# Funktion, welche die Fahrten nach Kombinationen ordnet
+# todo: muss noch komplett geschrieben werden
 
 
 

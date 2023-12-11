@@ -43,6 +43,10 @@ def decodeCurrent(dateipfad):
     # Den Index der Zeile mit der erfüllten Bedingung (True) erhalten
     index_zeile = df.index[bedingung]
 
+    # Abfrage damit index_zeile+3 nicht größer als maximaler Index ist, falls doch wird letzte Element aus index_zeile gelöscht
+    if index_zeile[-1]+3 >= len(df)-1:
+        index_zeile = index_zeile[:-1]
+
     # Prüfung der nächsten Zeilen
     next_index = index_zeile + 3
     new_bedingung = df['type'].eq('data').loc[next_index]
@@ -137,24 +141,24 @@ def decodePosition(dateipfad):
 
         # Ohne NoChanges & Errors
         if (current == [0, 0]) and (previous == [0, 1]):
-            counter -= 1
-        if (current == [0, 0]) and (previous == [1, 0]):
             counter += 1
+        if (current == [0, 0]) and (previous == [1, 0]):
+            counter -= 1
 
         if (current == [0, 1]) and (previous == [0, 0]):
-            counter += 1
-        if (current == [0, 1]) and (previous == [1, 1]):
             counter -= 1
+        if (current == [0, 1]) and (previous == [1, 1]):
+            counter += 1
 
         if (current == [1, 0]) and (previous == [0, 0]):
-            counter -= 1
-        if (current == [1, 0]) and (previous == [1, 1]):
             counter += 1
+        if (current == [1, 0]) and (previous == [1, 1]):
+            counter -= 1
 
         if (current == [1, 1]) and (previous == [0, 1]):
-            counter += 1
-        if (current == [1, 1]) and (previous == [1, 0]):
             counter -= 1
+        if (current == [1, 1]) and (previous == [1, 0]):
+            counter += 1
 
         array_position.append(counter * 0.005)
         array_time.append(time_neu)

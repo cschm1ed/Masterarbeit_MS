@@ -10,10 +10,10 @@ import functions_logicanalyzer
 # Hauptanzeige muss der Laptop sein (nicht der Bildschirm)
 
 # Anzahl der Referenzfahrten:
-n = 2
+n = 10
 
 # Dauer einer einzelnen Referenzfahrt (für die Datenaufnahme)
-dauer = 50
+dauer = 75
 
 # Benutzte Teile:
 motor = 'Schrittmotor'
@@ -31,7 +31,7 @@ for i in range(1, n+1):
     print("--- Start Referenzfahrt " + str(i) + "/" + str(n) + ":\t" + motor + " - " + getriebe)
     # Start der Datenaufnahme und der Referenzfahrt
     functions_logicanalyzer.recordLogic2Data(dauer=dauer, motor=motor, getriebe=getriebe)
-    print("     .... Referenzfahrt " + str(i) + "/" + str(n) + " done")
+    print("\t.... Referenzfahrt " + str(i) + "/" + str(n) + " done")
     # Mail senden
     if i % 5 == 0 or i == n:
         functions_general.sentMail('maxi11696@googlemail.com',iteration=i,numberofdrives=n)
