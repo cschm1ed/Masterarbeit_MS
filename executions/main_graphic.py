@@ -1,4 +1,4 @@
-from functions.graphic import Graphic
-#functions_graphic.createPlotlyFigures()
+import functions.graphic as Graphic
+
 
 Graphic.createandsaveMatplotlibFigures()
