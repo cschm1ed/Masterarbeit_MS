@@ -1,7 +1,8 @@
-import functions_general
+from functions.general import General
+
 
 # Hier werden die .csv Dateien für Position + Stromstärke erstellt
-functions_general.createFilesCurrentPosition()
+General.createFilesCurrentPosition()
 
 # Hier werden die finalen Ordner in #fertig erstellt, sowie die alten Ordner in #alt geschoben
-functions_general.createFinalFiles()
+General.createFinalFiles()

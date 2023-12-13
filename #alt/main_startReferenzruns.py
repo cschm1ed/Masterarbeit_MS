@@ -3,6 +3,7 @@
 # ----
 
 import time
+from tqdm import tqdm
 import functions_general
 import functions_logicanalyzer
 
@@ -13,11 +14,13 @@ import functions_logicanalyzer
 n = 10
 
 # Dauer einer einzelnen Referenzfahrt (für die Datenaufnahme)
-dauer = 75
+# v2: 75s
+# v3: 120s
+dauer = 120
 
 # Benutzte Teile:
 motor = 'Schrittmotor'
-getriebe = 'Zahnriemen'
+getriebe = 'Zahnräder'
 
 # Öffnen von Logic2 & Estlcam
 prozess_Logic2 = functions_logicanalyzer.startLogic2()
@@ -25,7 +28,7 @@ prozess_Estlcam = functions_general.openEstlcam()
 functions_general.openReferenzrun()
 
 # Mail beim Start senden
-functions_general.sentMail('maxi11696@googlemail.com',iteration=0,numberofdrives=n)
+functions_general.sentMail('maxi11696@googlemail.com', iteration=0, numberofdrives=n)
 # durch Anzahl der Referenzfahrten iterieren
 for i in range(1, n+1):
     print("--- Start Referenzfahrt " + str(i) + "/" + str(n) + ":\t" + motor + " - " + getriebe)
@@ -33,12 +36,21 @@ for i in range(1, n+1):
     functions_logicanalyzer.recordLogic2Data(dauer=dauer, motor=motor, getriebe=getriebe)
     print("\t.... Referenzfahrt " + str(i) + "/" + str(n) + " done")
     # Mail senden
-    if i % 5 == 0 or i == n:
-        functions_general.sentMail('maxi11696@googlemail.com',iteration=i,numberofdrives=n)
+    if i % 5 == 0 and i != n:
+        functions_general.sentMail('maxi11696@googlemail.com', iteration=i, numberofdrives=n)
+        print('\n--- Pause: 90s')
+        for j in tqdm(range(1, 91)):
+            time.sleep(1)
+        print('\n')
     # Pause zum Abkühlen von Motor & Spindel
     time.sleep(10)
+    # Mail senden nach Abschluss
+    if i == n:
+        functions_general.sentMail('maxi11696@googlemail.com', iteration=i, numberofdrives=n)
 
-print("Referenzfahrten (" + str(n) + ") erfolgreich abgeschlossen. ---")
+
+
+print("\nReferenzfahrten (" + str(n) + ") erfolgreich abgeschlossen. ---")
 # Schließen von Logic2 & Estlcam
 prozess_Estlcam.terminate()
 prozess_Logic2.terminate()
