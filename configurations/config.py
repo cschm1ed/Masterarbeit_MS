@@ -7,6 +7,7 @@ class Config:
     STR_raw_data = r'raw_data_sorted'
     STR_data_alt = r'#alt'
     STR_data_fertig = r'#fertig'
+    STR_data_machine_learning = r'#machine_learning'
 
     STR_servo_raeder = r"#_servo_zahnräder"
     STR_servo_riemen = r"#_servo_zahnriemen"
@@ -20,6 +21,7 @@ class Config:
     PATH_raw_data = os.path.join(BASE_PATH, STR_raw_data)
     PATH_data_alt = os.path.join(PATH_raw_data, STR_data_alt)
     PATH_data_fertig = os.path.join(PATH_raw_data, STR_data_fertig)
+    PATH_data_machine_learning = os.path.join(PATH_raw_data, STR_data_machine_learning)
 
     PATH_servo_raeder = os.path.join(PATH_data_fertig, STR_servo_raeder)
     PATH_servo_riemen = os.path.join(PATH_data_fertig, STR_servo_riemen)

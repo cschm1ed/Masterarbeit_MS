@@ -26,7 +26,7 @@ getriebe = 'Zahnriemen'
 # Öffnen von Logic2 & Estlcam
 prozess_Logic2 = LogicAnalyzer.startLogic2()
 prozess_Estlcam = Estlcam.openEstlcam()
-Estlcam.openReferencenRun()
+Estlcam.openReferenceRun()
 
 # Mail beim Start senden
 General.sendMail(recieveradress='maxi11696@googlemail.com', iteration=0, numberofdrives=n)

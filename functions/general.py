@@ -143,7 +143,7 @@ def countReferenceRuns():
                 elif 'Schritt' in inhalt and 'Zahnriemen' in inhalt:
                     counter_schritt_riemen = counter_schritt_riemen + 1
 
-    print('\nAnzahl der jeweils durchgeführten Referenzfahrten:\n')
+    print('\nAnzahl der jeweils durchgeführten Fahrten:\n')
     print('Servomotor_Zahnräder:\t\t' + str(counter_servo_raeder))
     print('Schrittmotor_Zahnräder:\t\t' + str(counter_schritt_raeder))
     print('Servomotor_Zahnriemen:\t\t' + str(counter_servo_riemen))
@@ -173,3 +173,19 @@ def sortFolder():
         print('--- Ordnern wurde dem zugehörigen Pfad zugeteilt.')
     else:
         print('--- Keine Ordner vorhanden.')
+
+# Funktion, welche für jede Fahrt das Verzeichnis ausgibt (als Array)
+def getallPaths():
+    ordner_liste = [d for d in os.listdir(Config.PATH_data_fertig) if
+                    os.path.isdir(os.path.join(Config.PATH_data_fertig, d))]
+    path_liste = []
+    for ordner in ordner_liste:
+        verzeichnis = os.path.join(Config.PATH_data_fertig, ordner)
+        ordner_liste_2 = [d for d in os.listdir(verzeichnis) if
+                          os.path.isdir(os.path.join(verzeichnis, d))]
+        for ordner_2 in ordner_liste_2:
+            verzeichnis_2 = os.path.join(verzeichnis, ordner_2)
+
+            path_liste.append(verzeichnis_2)
+    return path_liste
+

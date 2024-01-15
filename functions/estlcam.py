@@ -30,7 +30,7 @@ def openEstlcam():
     return prozess
 
 # Funktion zum Laden der Referenzfahrt:
-def openReferencenRun():
+def openReferenceRun():
     time.sleep(3)
     aktives_fenster = gw.getActiveWindow()
     fenstertitel = aktives_fenster.title
