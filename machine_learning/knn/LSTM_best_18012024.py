@@ -73,10 +73,6 @@ model.add(LSTM(150, return_sequences=True))
 model.add(BatchNormalization())
 model.add(Dropout(0.4))
 # Add a third LSTM layer with 50 units
-model.add(LSTM(200, return_sequences=True))
-model.add(BatchNormalization())
-model.add(Dropout(0.4))
-# Add a third LSTM layer with 50 units
 model.add(LSTM(150, return_sequences=True))
 model.add(BatchNormalization())
 model.add(Dropout(0.4))
