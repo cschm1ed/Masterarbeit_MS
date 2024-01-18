@@ -1,3 +1,4 @@
+
 import pandas as pd
 from sklearn.preprocessing import LabelEncoder
 
@@ -82,6 +83,7 @@ model.add(BatchNormalization())
 model.add(Dropout(0.4))
 # Add a dense layer with the number of output neurons
 model.add(Dense(4, activation='softmax'))
+
 
 # Compile the model
 model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])
