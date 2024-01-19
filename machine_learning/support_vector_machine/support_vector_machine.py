@@ -1,6 +1,6 @@
 import pandas as pd
 import os
-from machine_learning.random_forest.features import extractFeatures
+from machine_learning.random_forest.features import extractFeatures_Stock
 from configurations.config import Config
 from sklearn.svm import SVC
 from sklearn.model_selection import train_test_split
@@ -28,7 +28,7 @@ def runSupportVectorMachine(data_raw, scaler_type):
         for window_size in window_sizes:
 
             # Extraktion der Features:
-            features, labels = extractFeatures(data, window_size=window_size)
+            features, labels = extractFeatures_Stock(data, window_size=window_size)
 
             ###############################################
             # Start Support Vector Machine:

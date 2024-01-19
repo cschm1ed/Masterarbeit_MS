@@ -1,6 +1,7 @@
 import pandas as pd
 import os
-from machine_learning.random_forest.features import extractFeatures
+from machine_learning.random_forest.features import extractFeatures_Stock
+from machine_learning.random_forest.features import extractFeatures_MA_Karle
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import accuracy_score, classification_report
@@ -24,7 +25,7 @@ def runRandomForest(data_raw, n_estimators, scaler_type):
     for window_size in window_sizes:
 
         # Extraktion der Features:
-        features, labels = extractFeatures(data, window_size=window_size)
+        features, labels = extractFeatures_MA_Karle(data, window_size=window_size)
 
         ###############################################
         #Start Random Forest:

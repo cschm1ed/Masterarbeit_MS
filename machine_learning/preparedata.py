@@ -91,5 +91,3 @@ def prepareData(scaler_type, saveData = False):
         combined_df.to_parquet(output_pfad)
 
     return combined_df
-
-
