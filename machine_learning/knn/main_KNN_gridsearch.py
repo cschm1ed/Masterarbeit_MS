@@ -6,44 +6,49 @@
 
 from machine_learning.knn.functions_knn import *
 from configurations.config import Config
-
+import matplotlib.pyplot as plt
+import os
+import numpy as np
 
 if __name__ == "__main__":
-    import matplotlib.pyplot as plt
-    import os
-    import numpy as np
+
+    # Rohdatei
+    raw_data = 'output_MinMaxScaler.parquet'
 
     # Parameter für Grid Search
-    sample_lengths = [100, 200]  # Beispielwerte
-    batch_sizes = [4112]  # Beispielwerte
-    num_combinations = len(sample_lengths) * len(batch_sizes)
-    # Ergebnisse speichern
-    results = {}
+    sample_lengths = [25, 50, 100, 200]
+    batch_sizes = [16, 32, 64, 128]
 
-    # Alle Kombinationen von Hyperparametern erzeugen
+    num_combinations = len(sample_lengths) * len(batch_sizes)
     grid = np.zeros((len(batch_sizes), len(sample_lengths)))
 
-    # Epochn
+
+    # Feste Parameter
+    learning_rate = 0.001
     epochs = 1
-
     n = 1
+    results = {}
 
+    print('---- Start GridSearch: ----')
+    print('Rohdatei: ' + raw_data)
     # Grid Search durchführen
     for i, batch_size in enumerate(batch_sizes):
         for j, sample_length in enumerate(sample_lengths):
             print('_________________________________________________________________')
             print(f'\tAnzahl Durchläufe: ' + str(n) + ' / ' + str(num_combinations))
-            print(f'\tSample Length: {sample_length}, Batch Size: {batch_size}')
-            accuracy = main_LSTM(sample_length, batch_size, epochs=epochs)
+            print(f'\tSample Length: {sample_length}, Batch Size: {batch_size}, Learning Rate: {learning_rate}')
+
+            # Hauptfunktion
+            accuracy = main_LSTM(sample_length=sample_length, batch_size=batch_size, epochs=epochs, learning_rate=learning_rate, raw_data=raw_data)
             results[(sample_length, batch_size)] = accuracy
+
             n += 1
             print(f"\tAccuracy: {accuracy}")
             print('_________________________________________________________________')
 
-
-
             grid[i, j] = accuracy
 
+    # Ausgabe gridsearch
     plt.figure(figsize=(8, 6))
     plt.imshow(grid, cmap='Blues', interpolation='nearest')
 
@@ -58,5 +63,5 @@ if __name__ == "__main__":
     plt.ylabel('Batch Size')
     plt.title('Grid Search Results - Test Accuracy')
     plt.savefig(os.path.join(Config.PATH_data_machine_learning, 'grid_search_LSTM.png'))
-
+    print('---- Ende GridSearch. ----')
 

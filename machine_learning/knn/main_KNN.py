@@ -3,7 +3,7 @@ from sklearn.model_selection import train_test_split
 from keras.utils import to_categorical
 from sklearn.metrics import confusion_matrix
 
-
+#todo: muss noch komplett aktualisiert werden
 # Hauptteil des Skripts
 def main_LSTM(sample_length=100, batch_size=16, epochs=10):
     data_raw = r'C:\Users\maxi1\Documents\UNI MASTER KIT\#MASTERARBEIT\05 Sonstige Dokumente\PycharmProjects\Masterarbeit_Schubert\raw_data_sorted\#machine_learning\output_MinMaxScaler.parquet'
