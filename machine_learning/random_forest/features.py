@@ -2,9 +2,9 @@ import numpy as np
 import pandas as pd
 
 # Funktion zum Features extrahieren:
-def extractFeatures_Stock(data, window_size):
+def extractFeatures_Stock(dataframe, window_size):
     # Number of windows
-    num_windows = len(data) // window_size
+    num_windows = len(dataframe) // window_size
 
     # Initializing lists to store the extracted features and labels for each window
     features = []
@@ -12,7 +12,7 @@ def extractFeatures_Stock(data, window_size):
 
     for i in range(num_windows):
         # Extracting a window from the dataset
-        window = data.iloc[i * window_size:(i + 1) * window_size]
+        window = dataframe.iloc[i * window_size:(i + 1) * window_size]
 
         # Calculating features
         avg_current = np.mean(window['current_[mA]'])

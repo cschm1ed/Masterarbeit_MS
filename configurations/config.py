@@ -2,8 +2,8 @@ import os
 
 class Config:
     ##########
-    #BASE_PATH = r'C:\Users\maxi1\Documents\UNI MASTER KIT\#MASTERARBEIT\05 Sonstige Dokumente\PycharmProjects\Masterarbeit_Schubert'
-    BASE_PATH = r'/content/drive/MyDrive/Colab/Masterarbeit_Schubert'
+    BASE_PATH = r'C:\Users\maxi1\Documents\UNI MASTER KIT\#MASTERARBEIT\05 Sonstige Dokumente\PycharmProjects\Masterarbeit_Schubert'
+    #BASE_PATH = r'/content/drive/MyDrive/Colab/Masterarbeit_Schubert'
     ##########
 
     STR_raw_data = r'raw_data_sorted'

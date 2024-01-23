@@ -1,0 +1,2 @@
+####
+# für Funktionen prepareData()

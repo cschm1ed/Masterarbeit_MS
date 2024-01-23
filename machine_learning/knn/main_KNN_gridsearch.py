@@ -39,7 +39,7 @@ if __name__ == "__main__":
             print(f'\tSample Length: {sample_length}, Batch Size: {batch_size}, Learning Rate: {learning_rate}')
 
             # Hauptfunktion
-            accuracy = main_LSTM(sample_length=sample_length, batch_size=batch_size, epochs=epochs, learning_rate=learning_rate, raw_data=raw_data)
+            accuracy, model = main_LSTM(sample_length=sample_length, batch_size=batch_size, epochs=epochs, learning_rate=learning_rate, raw_data=raw_data)
             results[(sample_length, batch_size)] = accuracy
 
             n += 1

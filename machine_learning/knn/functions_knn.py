@@ -183,4 +183,4 @@ def main_LSTM(sample_length, batch_size, epochs, learning_rate, raw_data):
                        epochs=epochs, cm=cm, label_encoder=label_encoder,
                        test_loss=test_loss, test_accuracy=test_accuracy, sample_length=sample_length,
                        learning_rate=learning_rate)
-        return test_accuracy
+        return test_accuracy, model
