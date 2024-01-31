@@ -86,7 +86,7 @@ def prepareData(scaler_type, saveData = False):
     print('---- End. ----')
     # Speichern des gesamten Dataframes in einer neuen .csv Datei:
     if saveData == True:
-        output_pfad = os.path.join(Config.PATH_data_machine_learning, 'output_' + scaler_type + 'Scaler.parquet')
+        output_pfad = os.path.join(Config.PATH_data_machine_learning, 'output_Testdatensatz_3_' + scaler_type + 'Scaler.parquet')
         # combined_df.to_csv(output_pfad, index=False)
         combined_df.to_parquet(output_pfad)
 

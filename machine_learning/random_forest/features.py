@@ -2,9 +2,9 @@ import numpy as np
 import pandas as pd
 
 # Funktion zum Features extrahieren:
-def extractFeatures_Stock(dataframe, window_size):
+def extractFeatures_Stock(dataframe, sample_length):
     # Number of windows
-    num_windows = len(dataframe) // window_size
+    num_windows = len(dataframe) // sample_length
 
     # Initializing lists to store the extracted features and labels for each window
     features = []
@@ -12,7 +12,7 @@ def extractFeatures_Stock(dataframe, window_size):
 
     for i in range(num_windows):
         # Extracting a window from the dataset
-        window = dataframe.iloc[i * window_size:(i + 1) * window_size]
+        window = dataframe.iloc[i * sample_length:(i + 1) * sample_length]
 
         # Calculating features
         avg_current = np.mean(window['current_[mA]'])
@@ -45,9 +45,9 @@ from scipy.signal import find_peaks
 from scipy.fft import fft
 from scipy.stats import skew
 
-def extractFeatures_MA_Karle(dataframe, window_size):
+def extractFeatures_MA_Karle(dataframe, sample_length):
     # Number of windows
-    num_windows = len(dataframe) // window_size
+    num_windows = len(dataframe) // sample_length
 
     # Initializing lists to store the extracted features and labels for each window
     features = []
@@ -55,7 +55,7 @@ def extractFeatures_MA_Karle(dataframe, window_size):
 
     for i in range(num_windows):
         # Extracting a window from the dataset
-        window = dataframe.iloc[i * window_size:(i + 1) * window_size]
+        window = dataframe.iloc[i * sample_length:(i + 1) * sample_length]
 
         # Umwandlung der Datenreihe in ein NumPy-Array für einfache Berechnungen
         data_current = np.array(window['current_[mA]'])

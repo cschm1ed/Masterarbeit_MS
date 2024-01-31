@@ -17,9 +17,11 @@ def decode_twos_complement(binary_string):
     decimal_value = int(inverted if is_negative else binary_string, 2)
     return -decimal_value if is_negative else decimal_value
 
+
 # Funktion zum Umwandeln von Binär in Dezimal
 def bin_to_decimal(bin_string):
     return int(bin_string, 2)
+
 
 # Funktion zum Umwandeln von Hex in Binär
 def hex_to_bin(hex_string):
@@ -39,13 +41,13 @@ def decodeCurrent(dateipfad):
     df = pd.read_csv(dateipfad)
 
     # Bedingung überprüfen, ob 'data' die Werte '0x04' (unabhängig von der Groß- und Kleinschreibung) enthält (stellt die Read Bedingung dar)
-    bedingung = df['data'].str.contains(r'0x04', na=False, case=False, regex=True) #& df['ack'] == True
+    bedingung = df['data'].str.contains(r'0x04', na=False, case=False, regex=True)  # & df['ack'] == True
 
     # Den Index der Zeile mit der erfüllten Bedingung (True) erhalten
     index_zeile = df.index[bedingung]
 
     # Abfrage damit index_zeile+3 nicht größer als maximaler Index ist, falls doch wird letzte Element aus index_zeile gelöscht
-    if index_zeile[-1]+3 >= len(df)-1:
+    if index_zeile[-1] + 3 >= len(df) - 1:
         index_zeile = index_zeile[:-1]
 
     # Prüfung der nächsten Zeilen
@@ -59,7 +61,7 @@ def decodeCurrent(dateipfad):
         merged_index = index1.union(index2)
     else:
         false_indexes = new_bedingung.index[new_bedingung == False]
-        false_indexes_neu = false_indexes-3
+        false_indexes_neu = false_indexes - 3
         index_corect = index_zeile.difference(false_indexes_neu)
         index1 = index_corect + 3
         index2 = index_corect + 4
@@ -73,7 +75,7 @@ def decodeCurrent(dateipfad):
     data_zeilen['data_bin'] = data_zeilen['data_bin_old'].str.replace(' ', '').str.zfill(8)
 
     # Saplten 'start_time' und 'data_bin_neu' extrahieren
-    data_new = data_zeilen[['start_time','data_bin']]
+    data_new = data_zeilen[['start_time', 'data_bin']]
 
     # Indexreset
     data_new.reset_index(drop=True, inplace=True)
@@ -85,21 +87,26 @@ def decodeCurrent(dateipfad):
     ergebnis_df = pd.DataFrame(columns=['time_[s]', 'data_bin'])
 
     # Für Errors:
-    #print(data_new)
-    #data_new.to_csv('errors/vergleichlogicarduino.txt', sep=',', index=False)
+    # print(data_new)
+    # data_new.to_csv('errors/vergleichlogicarduino.txt', sep=',', index=False)
+
 
     # for-Schleife zum Hinzufügen von Daten
-    for i in tqdm(range(0,anzahl_data_new-1,2)):
+    for i in tqdm(range(0, anzahl_data_new - 1, 2)):
         # Timestamp wird von ersten Datenpaket genommen
         time = data_new.loc[i, 'start_time']
         # Auslesen des ersten Register-Datenpakets
-        paket1 = data_new.loc[i,'data_bin']
+        paket1 = data_new.loc[i, 'data_bin']
         # Auslesen des zweiten Register-Datenpakets
-        paket2 = data_new.loc[i+1,'data_bin']
+        paket2 = data_new.loc[i + 1, 'data_bin']
+        if paket1 is None or paket2 is None:
+            data_new = data_new.drop([i, i + 1])
+            continue
         # Zusammenfügen beider Register-Datenpakete
         data = paket1 + paket2
         # Hinzufügen zum ergebnis_df
-        ergebnis_df.loc[i] = [time,data]
+        ergebnis_df.loc[i] = [time, data]
+        # print(i)
 
     # Umrechnung von bin in dez (auch das Zweierkomplement für negative Zahlen wird beachtet)
     ergebnis_df['data_dez'] = ergebnis_df['data_bin'].apply(decode_twos_complement)
@@ -116,9 +123,9 @@ def decodeCurrent(dateipfad):
     ergebnis_df = ergebnis_df.drop(columns_to_delete, axis=1)
 
     # Ausgabe des ergebnis_df
-    #print(ergebnis_df)
+    # print(ergebnis_df)
 
-    #Rückgabe des ergebnis_df
+    # Rückgabe des ergebnis_df
     return ergebnis_df
 
 
@@ -135,7 +142,7 @@ def decodePosition(dateipfad):
     array_time = []
     counter = 0
 
-    for i in tqdm(range(len(array_channel4) - 1)): # tqdm: Zur Anzeige der verbleibenden Dauer
+    for i in tqdm(range(len(array_channel4) - 1)):  # tqdm: Zur Anzeige der verbleibenden Dauer
         current = [array_channel4[i + 1], array_channel5[i + 1]]
         previous = [array_channel4[i], array_channel5[i]]
         time_neu = array_channeltime[i]

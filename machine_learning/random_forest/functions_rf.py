@@ -9,12 +9,13 @@ from sklearn.metrics import accuracy_score, classification_report
 from configurations.config import Config
 from machine_learning.preparedata import prepareData
 import matplotlib.pyplot as plt
+from joblib import dump
 
 
-def runRandomForest(data_raw, n_estimators, window_sizes , feature_type):
+def runRandomForest(data_raw, n_estimators, sample_lengths , feature_type):
     results = {}
-    grid = np.zeros((len(n_estimators), len(window_sizes)))
-    num_combinations = len(n_estimators) * len(window_sizes)
+    grid = np.zeros((len(n_estimators), len(sample_lengths)))
+    num_combinations = len(n_estimators) * len(sample_lengths)
 
     if isinstance(data_raw, str):
         data = pd.read_parquet(data_raw)
@@ -29,16 +30,16 @@ def runRandomForest(data_raw, n_estimators, window_sizes , feature_type):
     n = 1
 
     for i, n_estimator in enumerate(n_estimators):
-        for j, window_size in enumerate(window_sizes):
+        for j, sample_length in enumerate(sample_lengths):
             print('_________________________________________________________________')
             print(f'\tAnzahl Durchläufe: ' + str(n) + ' / ' + str(num_combinations))
-            print(f'\tSample Length: {window_size}, N_Estimator: {n_estimator}')
+            print(f'\tSample Length: {sample_length}, N_Estimator: {n_estimator}')
             n += 1
             # Extraktion der Features:
             if feature_type == 'MA_Karle':
-                features, labels = extractFeatures_MA_Karle(dataframe = data, window_size=window_size)
+                features, labels = extractFeatures_MA_Karle(dataframe=data, sample_length=sample_length)
             elif feature_type == 'Standard':
-                features, labels = extractFeatures_Stock(dataframe = data, window_size=window_size)
+                features, labels = extractFeatures_Stock(dataframe=data, sample_length=sample_length)
 
             ###############################################
             #Start Random Forest:
@@ -59,25 +60,30 @@ def runRandomForest(data_raw, n_estimators, window_sizes , feature_type):
             # Genauigkeit berechnen
             accuracy = accuracy_score(y_test, y_pred)
 
-            results[(n_estimator, window_size)] = accuracy
+            results[(n_estimator, sample_length)] = accuracy
             grid[i, j] = accuracy
+
+            # Speichern des Modells:
+            model_filename = f'random_forest_{n_estimator}_{sample_length}.joblib'
+            dump(rf, os.path.join(Config.PATH_data_machine_learning, model_filename))
 
             print(f"\tAccuracy: {accuracy}")
             print('_________________________________________________________________')
 
     # Ausgabe gridsearch
-    plt.figure(figsize=(8, 6))
+    plt.figure(figsize=(7, 3))
     plt.imshow(grid, cmap='Blues', interpolation='nearest')
 
     for i in range(len(n_estimators)):
-        for j in range(len(window_sizes)):
+        for j in range(len(sample_lengths)):
             plt.text(j, i, f'{grid[i, j] * 100:.2f}%', ha='center', va='center', color='black')
 
+    #plt.colorbar(label='Test Accuracy')
     plt.colorbar(label='Test Accuracy')
-    plt.xticks(np.arange(len(window_sizes)), window_sizes)
+    plt.xticks(np.arange(len(sample_lengths)), sample_lengths)
     plt.yticks(np.arange(len(n_estimators)), n_estimators)
     plt.xlabel('Sample Length')
-    plt.ylabel('N_Estimators')
+    plt.ylabel('n_Estimators')
     plt.title('Grid Search Results - Test Accuracy')
     plt.savefig(os.path.join(Config.PATH_data_machine_learning, 'grid_search_RF.png'))
     print('---- Ende GridSearch. ----')

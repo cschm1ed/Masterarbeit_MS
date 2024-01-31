@@ -18,7 +18,8 @@ class Config:
     STR_schritt_riemen = r"#_schritt_zahnriemen"
 
     STR_KNN = r'KNN'
-    STR_MinMaxScaler = r'MinMaxScaler'
+    STR_RF  = r'RF'
+    STR_Testdaten = r'Testdaten'
 
 
 
@@ -30,13 +31,14 @@ class Config:
     PATH_data_fertig = os.path.join(PATH_raw_data, STR_data_fertig)
     PATH_data_machine_learning = os.path.join(PATH_raw_data, STR_data_machine_learning)
 
-
     PATH_servo_raeder = os.path.join(PATH_data_fertig, STR_servo_raeder)
     PATH_servo_riemen = os.path.join(PATH_data_fertig, STR_servo_riemen)
     PATH_schritt_raeder = os.path.join(PATH_data_fertig, STR_schritt_raeder)
     PATH_schritt_riemen = os.path.join(PATH_data_fertig, STR_schritt_riemen)
 
     PATH_KNN = os.path.join(PATH_data_machine_learning, STR_KNN)
+    PATH_RF = os.path.join(PATH_data_machine_learning, STR_RF)
+    PATH_Testdaten = os.path.join(PATH_data_machine_learning, STR_Testdaten)
 
 
 

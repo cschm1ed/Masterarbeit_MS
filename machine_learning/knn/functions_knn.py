@@ -34,7 +34,8 @@ def preprocess_data(df):
 
 
 def prepare_lstm_data(X, y, sample_length, features):
-    samples = int(18600 * 81 / sample_length)
+    number_drives = len(X) / 18600
+    samples = int(18600 * number_drives / sample_length)
     X_reshaped = X.values.reshape(samples, sample_length, features)
     y_reshaped = y.iloc[::sample_length].reset_index(drop=True)
     return X_reshaped, y_reshaped

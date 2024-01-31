@@ -5,10 +5,11 @@ from configurations.config import Config
 ############################################################################################################################
 
 ######
-data_raw = os.path.join(Config.PATH_data_machine_learning, 'output_StandardScaler.parquet')
+data_raw = os.path.join(Config.PATH_data_machine_learning, 'output_raw_18600.parquet')
 
-#window_sizes = [18600, 9300, 3100, 1860, 100, 10]
-window_sizes = [25, 50, 100, 200, 300, 1860, 9300, 18600]
+#sample_lengths = [18600, 9300, 3100, 1860, 100, 10]
+sample_lengths = [25, 50, 100, 200, 300, 1860, 9300, 18600]
+
 
 feature_type = 'MA_Karle'
 
@@ -16,7 +17,7 @@ n_estimator = [4, 10, 100]
 ######
 
 
-runRandomForest(data_raw=data_raw, window_sizes= window_sizes, n_estimators=n_estimator, feature_type=feature_type)
+runRandomForest(data_raw=data_raw, sample_lengths= sample_lengths, n_estimators=n_estimator, feature_type=feature_type)
 
 
 

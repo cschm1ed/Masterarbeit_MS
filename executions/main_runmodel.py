@@ -12,7 +12,7 @@ import functions.general as General
 # Hauptanzeige muss der Laptop sein (nicht der Bildschirm)
 
 # Anzahl der Referenzfahrten:
-n = 10
+n = 3
 
 # Dauer einer einzelnen Referenzfahrt (für die Datenaufnahme)
 # v2: 75s
