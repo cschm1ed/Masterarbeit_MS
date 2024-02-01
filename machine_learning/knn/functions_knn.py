@@ -1,4 +1,5 @@
 import pandas as pd
+import numpy as np
 from keras.models import Sequential
 from keras.layers import LSTM, Dense, Dropout, BatchNormalization
 from keras.optimizers import Adam
@@ -6,42 +7,36 @@ from configurations.config import Config
 from sklearn.preprocessing import LabelEncoder
 from sklearn.model_selection import train_test_split
 from keras.utils import to_categorical
-from sklearn.metrics import confusion_matrix
+from sklearn.metrics import confusion_matrix, classification_report
 import os
 from datetime import datetime
 import matplotlib.pyplot as plt
 import seaborn as sns
 
 
-def read_data(filepath):
-    try:
-        df = pd.read_parquet(filepath)
-    except Exception as e:
-        print(f"Fehler beim Lesen der Datei: {e}")
-        return None
-    return df
-
-
-def preprocess_data(df):
+# Daten vorverarbeiten:
+def preprocessData(df, sample_length):
+    # Label encoden
     label_encoder = LabelEncoder()
     df['label'] = label_encoder.fit_transform(df['label'])
     label_mapping = dict(zip(label_encoder.classes_, label_encoder.transform(label_encoder.classes_)))
     # print(label_mapping)
+
+    # Bearbeiten der Daten
     df = df.drop('time_[s]', axis=1)
     X = df.drop('label', axis=1)
     y = df['label']
-    return X, y, label_encoder
-
-
-def prepare_lstm_data(X, y, sample_length, features):
+    features = 2
     number_drives = len(X) / 18600
     samples = int(18600 * number_drives / sample_length)
     X_reshaped = X.values.reshape(samples, sample_length, features)
     y_reshaped = y.iloc[::sample_length].reset_index(drop=True)
-    return X_reshaped, y_reshaped
+
+    return X_reshaped, y_reshaped, label_encoder
 
 
-def build_lstm_model(input_shape, num_classes, learning_rate):
+# Bau des LSTM Modells:
+def buildLSTMmodel(input_shape, num_classes, learning_rate):
     model = Sequential([
         LSTM(50, return_sequences=True, input_shape=input_shape),
         BatchNormalization(), Dropout(0.4),
@@ -55,20 +50,24 @@ def build_lstm_model(input_shape, num_classes, learning_rate):
     ])
     optimizer = Adam(learning_rate=learning_rate)
     model.compile(optimizer=optimizer, loss='categorical_crossentropy', metrics=['accuracy'])
+
     return model
 
 
-def save_data_lstm(model, history, batch_size, epochs, cm, label_encoder, test_loss, test_accuracy, sample_length,
-                   learning_rate):
-    ordnername = 'batchsize_' + str(batch_size) + '__samplelength_' + str(sample_length) + '__learningrate_' + str(
-        learning_rate) + '__' + datetime.now().strftime("%Y%m%d_%H%M%S")
-
+# Speichern der Daten:
+def saveTrainingResultsLSTM(model, history, batch_size, epochs, cm, label_encoder, test_loss, test_accuracy, sample_length,
+                    learning_rate, scaler):
+    # Erstellen eines neuen Ordners als Speicherort der Ergebnisse
+    ordnername = 'LSTM_' + scaler + 'Scaler__' + datetime.now().strftime("%Y%m%d_%H%M%S")
     output_dir = os.path.join(Config.PATH_KNN, ordnername)
     os.makedirs(output_dir)
 
-    # txt Datei mit Model Summary speichern
-    txt_file_path = os.path.join(output_dir, 'model_summary.txt')
+    # Modell abspeichern
+    model.save(os.path.join(output_dir, 'model_LSTM_' + scaler + '.h5'))
+    model.save(os.path.join(output_dir, 'model_LSTM_' + scaler + '.keras'))
 
+    # txt Datei erstellen
+    txt_file_path = os.path.join(output_dir, 'model_summary.txt')
     # Öffnen der Datei im Schreibmodus ('w' für Schreiben)
     with open(txt_file_path, 'w') as file:
         # Modelleigenschaften
@@ -102,7 +101,7 @@ def save_data_lstm(model, history, batch_size, epochs, cm, label_encoder, test_l
     ##########
     # Grafische Ausgabe
 
-    # Erstellen und Speichern der Genauigkeitsgrafik
+    # Erstellen und Speichern von accuracy plot
     plt.figure(figsize=(6, 4))
     plt.plot(history.history['accuracy'], label='Trainingsgenauigkeit')
     plt.plot(history.history['val_accuracy'], label='Validierungsgenauigkeit')
@@ -113,7 +112,7 @@ def save_data_lstm(model, history, batch_size, epochs, cm, label_encoder, test_l
     plt.grid()
     plt.savefig(os.path.join(output_dir, 'accuracy_plot.png'))
 
-    # Erstellen und Speichern der Verlustgrafik
+    # Erstellen und Speichern von loss plot
     plt.figure(figsize=(6, 4))
     plt.plot(history.history['loss'], label='Trainingsverlust')
     plt.plot(history.history['val_loss'], label='Validierungsverlust')
@@ -134,24 +133,62 @@ def save_data_lstm(model, history, batch_size, epochs, cm, label_encoder, test_l
     plt.savefig(os.path.join(output_dir, 'confusion_matrix_plot.png'))
 
 
-# Hauptteil des Skripts
-def main_LSTM(sample_length, batch_size, epochs, learning_rate, raw_data):
+def saveTestResultsLSTM(model_name, raw_data_name, sample_length, test_accuracy, test_loss, label_encoder, cm):
+    # Erstellen eines neuen Ordners als Speicherort der Ergebnisse
+    ordnername = r'Results_Test/LSTM_Results_Test__' + datetime.now().strftime("%Y%m%d_%H%M%S")
+    output_dir = os.path.join(Config.PATH_KNN, ordnername)
+    os.makedirs(output_dir)
+
+    # txt Datei erstellen
+    txt_file_path = os.path.join(output_dir, 'test_summary.txt')
+    # Öffnen der Datei im Schreibmodus ('w' für Schreiben)
+    with open(txt_file_path, 'w') as file:
+        file.write('Zusammenfassung Ergebnisse:\n')
+        file.write('-----------------------------------------------------------------\n')
+        # Modelleigenschaften
+        file.write('Verwendetes Modell:\n')
+        file.write(model_name)
+        file.write('\n\n')
+        file.write('Testdatensatz:\n')
+        file.write(raw_data_name)
+        file.write('\n\n')
+        file.write('Sample-Länge: {}\n'.format(sample_length))
+        file.write('-----------------------------------------------------------------\n')
+        # Resultate
+        file.write('Results:\n')
+        file.write("Accuracy auf Testdaten: {}\n".format(test_accuracy))
+        file.write("Loss auf Testdaten: {}\n\n".format(test_loss))
+        file.write('-----------------------------------------------------------------\n')
+        file.write('-----------------------------------------------------------------\n')
+        # Datum und Uhrzeit
+        file.write('Datum und Uhrzeit des Trainings: {}\n'.format(datetime.now().strftime("%Y-%m-%d %H:%M:%S")))
+
+        # Konfusionsmatrix grafisch darstellen
+        plt.figure(figsize=(14, 10))
+        sns.heatmap(cm, annot=True, fmt='g', cmap='Blues', xticklabels=label_encoder.classes_,
+                    yticklabels=label_encoder.classes_)
+        plt.xlabel('Vorhergesagte Labels')
+        plt.ylabel('Wahre Labels')
+        plt.title('Konfusionsmatrix')
+        plt.savefig(os.path.join(output_dir, 'confusion_matrix_plot.png'))
+
+
+
+# Training eines Modells: (ruft alle obigen Funktionen auf)
+def trainLSTM(data, sample_length, batch_size, epochs, learning_rate, scaler):
     # Einlesen der Rohdatei
-    data_raw = os.path.join(Config.PATH_data_machine_learning, raw_data)
-    df = read_data(data_raw)
+    df = data
     if df is not None:
-        # Datenvorverarbeiten
-        X, y, label_encoder = preprocess_data(df)
-        sample_length, features = sample_length, 2
-        X, y = prepare_lstm_data(X=X, y=y, sample_length=sample_length,
-                                 features=features)
+        # Datenvorverarbeitung
+        X, y, label_encoder = preprocessData(df, sample_length)
+
         # Aufteilen der Daten
         X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42, stratify=y)
         X_train, X_val, y_train, y_val = train_test_split(X_train, y_train, test_size=0.15, random_state=42,
                                                           stratify=y_train)
 
         # Modellparameter
-        input_shape = (sample_length, features)
+        input_shape = (sample_length, 2)
         num_classes = 4
 
         # Konvertieren der Labels in One-Hot-Kodierung
@@ -160,18 +197,19 @@ def main_LSTM(sample_length, batch_size, epochs, learning_rate, raw_data):
         y_val_one_hot = to_categorical(y_val, num_classes=num_classes)
 
         # Bau des Netzes
-        model = build_lstm_model(input_shape, num_classes, learning_rate)
+        model = buildLSTMmodel(input_shape, num_classes, learning_rate)
 
         # Fit des Netzes
         history = model.fit(X_train, y_train_one_hot, validation_data=(X_val, y_val_one_hot), epochs=epochs,
                             batch_size=batch_size)
 
-        # Modell Evaluieren
+        # Modell evaluieren
         test_loss, test_accuracy = model.evaluate(X_test, y_test_one_hot)
 
         # Modellvorhersagen machen
         y_pred = model.predict(X_test)
         y_pred_classes = y_pred.argmax(axis=1)
+
         # Umkehrung des Label Encodings
         y_pred_labels = label_encoder.inverse_transform(y_pred_classes)
         y_test_labels = label_encoder.inverse_transform(y_test)
@@ -179,9 +217,40 @@ def main_LSTM(sample_length, batch_size, epochs, learning_rate, raw_data):
         # Konfusionsmatrix berechnen
         cm = confusion_matrix(y_test_labels, y_pred_labels)
 
-        # Daten abspeichern
-        save_data_lstm(model=model, history=history, batch_size=batch_size,
-                       epochs=epochs, cm=cm, label_encoder=label_encoder,
-                       test_loss=test_loss, test_accuracy=test_accuracy, sample_length=sample_length,
-                       learning_rate=learning_rate)
+        # Ergebnisse abspeichern
+        saveTrainingResultsLSTM(model=model, history=history, batch_size=batch_size,
+                        epochs=epochs, cm=cm, label_encoder=label_encoder,
+                        test_loss=test_loss, test_accuracy=test_accuracy, sample_length=sample_length,
+                        learning_rate=learning_rate, scaler=scaler)
         return test_accuracy, model
+
+
+# Test eines Modells: (ruft alle obigen Funktionen auf)
+def testLSTM(data, model, sample_length, raw_data_name, model_name):
+    # Datenvorverarbeitung
+    X, y, label_encoder = preprocessData(data, sample_length)
+    # Modellparameter
+    num_classes = 4
+
+    # Konvertieren der Labels in One-Hot-Kodierung
+    y_one_hot = to_categorical(y, num_classes=num_classes)
+
+    # Modell evaluieren
+    test_loss, test_accuracy = model.evaluate(X, y_one_hot)
+
+    # Modellvorhersagen machen
+    predictions = model.predict(X)
+    predicted_classes_label = np.argmax(predictions, axis=1)
+
+    # Umkehrung des Label Encodings
+    predicted_classes = label_encoder.inverse_transform(predicted_classes_label)
+    true_classes = label_encoder.inverse_transform(y)
+
+    # Konfusionsmatrix berechnen
+    cm = confusion_matrix(true_classes, predicted_classes)
+
+    # Ergebnisse abspeichern
+    saveTestResultsLSTM(model_name=model_name, raw_data_name=raw_data_name, sample_length=sample_length,
+                        test_accuracy=test_accuracy, test_loss=test_loss, label_encoder=label_encoder, cm=cm)
+
+    return test_accuracy

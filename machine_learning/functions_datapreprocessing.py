@@ -19,58 +19,26 @@ def labelData(path,data):
             data['label'] = 'Servo_Zahnriemen'
         elif 'Schritt' in inhalt and 'Zahnriemen' in inhalt:
             data['label'] = 'Schritt_Zahnriemen'
-
     return data
-
-# Funktion zum Bereinigen der Stromdaten:
-def cleanData(data_current):
-    df = data_current
-    # Berechnung des Interquartilsabstands (IQR)
-    Q1 = df['current_[mA]'].quantile(0.2)
-    Q3 = df['current_[mA]'].quantile(0.8)
-    IQR = Q3 - Q1
-
-    # Bestimmung der Schwellenwerte für Ausreißer
-    faktor = 1.5
-    untere_grenze = Q1 - faktor * IQR
-    obere_grenze = Q3 + faktor * IQR
-
-    # Identifizierung der Ausreißer
-    ausreisser_indices = df[(df['current_[mA]'] < untere_grenze) | (df['current_[mA]'] > obere_grenze)].index
-
-    # Entfernen der Ausreißer
-    df_ohne_ausreisser = df.drop(ausreisser_indices)
-
-    # Rückgabe des Dataframes ohne Ausreißer
-    return df_ohne_ausreisser
 
 
 # Datenvorverarbeitung:
-def prepareData(scaler_type, saveData = False):
+def getParquetRaw(data_name, saveData = False):
+    # Aufrufen aller Pfade im Ordner #fertig
     paths = getallPaths()
     combined_df = pd.DataFrame()
 
-    print('---- Start: prepareData ----')
-    print('Scaler: ' + scaler_type)
-
-    if scaler_type == 'MinMax':
-        scaler = MinMaxScaler()
-    elif scaler_type == 'Standard':
-        scaler = StandardScaler()
-    else:
-        print('Falscher / kein Scaler ausgewählt! Möglich ist: "MinMax" oder "Standard".')
+    print('---- Start: getParquetRaw ----')
 
     for path in paths:
-        # Current:
+        # Einlesen von Current
         data = pd.read_csv(os.path.join(path, 'current.csv'))
-        # Position:
+        # Einlese von Position
         data_position = pd.read_csv(os.path.join(path, 'position.csv'))
-        # Interpolation der Positionswerte auf die Zeitstempel des Stromdatensatzes:
+
+        # Interpolation der Positionswerte auf die Zeitstempel des Stromdatensatzes
         interpolated_position = np.interp(data['time_[s]'], data_position['time_[s]'], data_position['position_[mm]'])
         data['position_[mm]'] = interpolated_position
-
-        # Normalisierung / Skalierung:
-        data = pd.DataFrame(scaler.fit_transform(data), columns=data.columns)
 
         # Kürzen der Daten (auf dieselbe Länge):
         data = data.iloc[:18600]
@@ -82,12 +50,40 @@ def prepareData(scaler_type, saveData = False):
         combined_df = pd.concat([combined_df, data], ignore_index=True)
 
     # Ausgabe des gesamten Dataframes:
-    print(combined_df)
+    #print(combined_df)
     print('---- End. ----')
     # Speichern des gesamten Dataframes in einer neuen .csv Datei:
     if saveData == True:
-        output_pfad = os.path.join(Config.PATH_data_machine_learning, 'output_Testdatensatz_3_' + scaler_type + 'Scaler.parquet')
+        output_pfad = os.path.join(Config.PATH_Trainingsdaten, 'output_' + data_name + '.parquet')
         # combined_df.to_csv(output_pfad, index=False)
         combined_df.to_parquet(output_pfad)
 
     return combined_df
+
+
+# Skalierung der Daten:
+def scaleData(raw_data, scaler_type):
+    print('\t---- Start: scaleData ----')
+
+    if isinstance(raw_data, pd.DataFrame) :
+        data = raw_data
+    elif isinstance(raw_data, str):
+        data = pd.read_parquet(raw_data)
+    else:
+        print('Fehler. ---')
+
+    # Auswahl des Scalers
+    if scaler_type == 'MinMax':
+        scaler = MinMaxScaler()
+    elif scaler_type == 'Standard':
+        scaler = StandardScaler()
+    else:
+        print('Falscher / kein Scaler ausgewählt! Möglich ist: "MinMax" oder "Standard".')
+
+    # Auswahl der zu skalierenden Spalten
+    columns_to_scale = ['time_[s]', 'current_[mA]', 'position_[mm]']
+    # Skalierung der Spalten
+    data[columns_to_scale] = scaler.fit_transform(data[columns_to_scale])
+    print('\t---- Ende: scaleData ----')
+
+    return data

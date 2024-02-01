@@ -20,6 +20,7 @@ class Config:
     STR_KNN = r'KNN'
     STR_RF  = r'RF'
     STR_Testdaten = r'Testdaten'
+    STR_Trainingsdaten = r'Trainingsdaten'
 
 
 
@@ -39,6 +40,7 @@ class Config:
     PATH_KNN = os.path.join(PATH_data_machine_learning, STR_KNN)
     PATH_RF = os.path.join(PATH_data_machine_learning, STR_RF)
     PATH_Testdaten = os.path.join(PATH_data_machine_learning, STR_Testdaten)
+    PATH_Trainingsdaten = os.path.join(PATH_data_machine_learning, STR_Trainingsdaten)
 
 
 
