@@ -102,7 +102,7 @@ def saveTrainingResultsLSTM(model, history, batch_size, epochs, cm, label_encode
     # Grafische Ausgabe
 
     # Erstellen und Speichern von accuracy plot
-    plt.figure(figsize=(6, 4))
+    plt.figure(figsize=(9, 6))
     plt.plot(history.history['accuracy'], label='Trainingsgenauigkeit')
     plt.plot(history.history['val_accuracy'], label='Validierungsgenauigkeit')
     plt.title('Genauigkeit über Epochen')
@@ -113,7 +113,7 @@ def saveTrainingResultsLSTM(model, history, batch_size, epochs, cm, label_encode
     plt.savefig(os.path.join(output_dir, 'accuracy_plot.png'))
 
     # Erstellen und Speichern von loss plot
-    plt.figure(figsize=(6, 4))
+    plt.figure(figsize=(9, 6))
     plt.plot(history.history['loss'], label='Trainingsverlust')
     plt.plot(history.history['val_loss'], label='Validierungsverlust')
     plt.title('Verlust über Epochen')

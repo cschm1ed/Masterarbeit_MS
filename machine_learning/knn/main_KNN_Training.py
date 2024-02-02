@@ -31,7 +31,7 @@ learning_rate = 0.001
 
 
 
-print('---- Start Training: ----')
+print('---- Start Training KNN: ----')
 print('Rohdatei: ' + data_training)
 print(f'Sample Length: {sample_length}, Batch Size: {batch_size}, Learning Rate: {learning_rate}')
 

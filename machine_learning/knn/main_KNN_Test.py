@@ -16,13 +16,20 @@ from machine_learning.functions_datapreprocessing import scaleData
 # 1: andere Ref.-fahrt mit Gewicht m=2.5kg
 # 2: selbe Ref.-fahrt mit Gewicht m=2.5kg
 # Train: alte Ref.-fahrt ohne Gewicht (Trainingsdaten)
-testdatensatz = 'Train'
+testdatensatz = '2'
 
 # Auswahl der Modells:
 # model_LSTM_Standard_TrainData.h5/.keras
 # model_LSTM_Standard_AugData.h5/.keras
+
+# model_LSTM_Standard_AugNewData.h5/.keras
+# model_LSTM_Standard_AugNew2Data.h5/.keras
+
 # model_LSTM_Standard_TrainAugData.h5/.keras
-version = 'TrainAug'
+# model_LSTM_Standard_TrainAugAugNewData.h5/.keras
+# model_LSTM_Standard_TrainAugAugNew2Data.h5/.keras
+
+version = 'AugNew2'
 model_name = r'model_LSTM_Standard_' + version + 'Data.h5'
 
 

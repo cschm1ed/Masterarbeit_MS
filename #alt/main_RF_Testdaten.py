@@ -1,5 +1,4 @@
 from configurations.config import Config
-from machine_learning.random_forest.features import *
 import os
 import glob
 import re
