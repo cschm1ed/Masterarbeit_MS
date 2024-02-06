@@ -5,6 +5,16 @@ import pygetwindow as gw
 from configurations.config import Config
 
 
+# ----
+# FUNKTIONEN ZUR STEUERUNG VON ESTLCAM
+# ----
+
+
+# ACHTUNG:
+# evtl. müssen die Positionierbefehle (x & y) neu definiert werden
+# Code ist auf einen 13 Zoll großen Laptop ausgelegt
+
+
 # Funktion zum Öffnen von Estlcam & des CNC-Controller:
 def openEstlcam():
     # Pfad der Estlcam.exe Datei
@@ -29,6 +39,7 @@ def openEstlcam():
     print('Funktion "openEstlcam" abgeschlossen. ---')
     return prozess
 
+
 # Funktion zum Laden der Referenzfahrt:
 def openReferenceRun():
     time.sleep(3)
@@ -51,6 +62,7 @@ def openReferenceRun():
         print('Funktion "openReferenceRun" abgeschlossen. ---')
     else:
         print("Fehler: CNC-Controller nicht richtig geöffnet. ---")
+
 
 # Funktion zum Starten der Referenzfahrt:
 def startReferenceRun():

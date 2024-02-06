@@ -1,4 +1,3 @@
-
 import datetime
 import os
 import shutil
@@ -9,6 +8,11 @@ from configurations.config import Config
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 import smtplib
+
+
+# ----
+# ALLGEMEINE FUNKTIONEN
+# ----
 
 
 # Funktion zum automatisierten Mails schicken:
@@ -35,9 +39,9 @@ def sendMail(recieveradress, iteration, numberofdrives):
     session.sendmail(sender_address, receiver_address, text)
     session.quit()
 
+
 # Funktion zur Erstellung der Dateien current.csv & position.csv
 def createCSV_CurrentPosition():
-
     ordner_liste = [d for d in os.listdir(Config.PATH_raw_data) if
                     os.path.isdir(os.path.join(Config.PATH_raw_data, d)) and "digital_output" in d]
     if ordner_liste:
@@ -56,6 +60,7 @@ def createCSV_CurrentPosition():
         print('--- Für alle Ordner in "raw_data_sorted" wurden die Dateien "current.csv" und "position.csv" erstellt.')
     else:
         print('--- Keine rohen Daten (digital_output) vorhanden.')
+
 
 # Funktion zur finalen Datenerstellung
 def moveCSVtofertig():
@@ -116,6 +121,7 @@ def moveCSVtofertig():
     else:
         print('--- Keine rohen Daten (digital_output) vorhanden.')
 
+
 # Funktion, welche die Anzahl der durchgeführten Referenzfahrt zählt
 def countReferenceRuns():
     counter_servo_raeder = 0
@@ -151,6 +157,7 @@ def countReferenceRuns():
     counter = counter_schritt_raeder + counter_servo_riemen + counter_schritt_raeder + counter_schritt_riemen
     print('\nGesamt:\t\t\t\t\t\t' + str(counter))
 
+
 # Funktion, welche die Fahrten nach Kombinationen ordnet
 def sortFolder():
     ordner_liste = [d for d in os.listdir(Config.PATH_data_fertig) if
@@ -174,6 +181,7 @@ def sortFolder():
     else:
         print('--- Keine Ordner vorhanden.')
 
+
 # Funktion, welche für jede Fahrt das Verzeichnis ausgibt (als Array)
 def getallPaths():
     ordner_liste = [d for d in os.listdir(Config.PATH_data_fertig) if
@@ -188,4 +196,3 @@ def getallPaths():
 
             path_liste.append(verzeichnis_2)
     return path_liste
-

@@ -3,28 +3,34 @@ from machine_learning.functions_datapreprocessing import scaleData
 from configurations.config import Config
 import os
 
+# ----
+# MAIN: TESTEN EINES RF-MODELLS
+# ----
 
-##################################################################
-# Eingaben:
+##############################################################
+# EINGABEN:
 
 # Auswahl des Testdatensatzes:
 # 1: andere Ref.-fahrt mit Gewicht m=2.5kg
 # 2: selbe Ref.-fahrt mit Gewicht m=2.5kg
 # Train: alte Ref.-fahrt ohne Gewicht (Trainingsdaten)
-#testdatensatz = '1'
-testdatensatze = ['Train', 1 , 2]
+# testdatensatz = '1'
+testdatensatze = [1, 2]
 
 # Auswahl der Modelle:
 # aus Train Daten: r'output_raw_18600.parquet'
 # aus allen Daten: r'output_raw+aug+aug_new2_18600.parquet'
-#models = r'output_raw_18600.parquet'
+# models = r'output_raw_18600.parquet'
 models = r'output_raw+aug+aug_new2_18600.parquet'
 
-#MinMax, Standard oder No
-#scaler = 'No'
-scalers = ['No', 'Standard', 'MinMax']
+# MinMax, Standard oder No
+# scaler = 'No'
+# scalers = ['No', 'Standard', 'MinMax']
+scalers = ['Standard']
 
-##################################################################
+##############################################################
+
+
 for scaler in scalers:
     for testdatensatz in testdatensatze:
         # Einlesen der Rohdatei
@@ -45,6 +51,7 @@ for scaler in scalers:
             print('Fehler bei der Auswahl des Scalers.')
         print('---------------------')
 
-        testRF(data_raw=data, models=models, scaler=scaler, testdatensatz=testdatensatz)
+        testRF(data_raw=data, models=models, scaler=scaler, testdatensatz=testdatensatz, saveData=False,
+               conf_matrix=True)
 
         print('---- Ende. ----')

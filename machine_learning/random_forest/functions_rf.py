@@ -11,6 +11,11 @@ from scipy.fft import fft
 import glob
 from sklearn.metrics import accuracy_score, classification_report, confusion_matrix
 from joblib import load
+import seaborn as sns
+
+# ----
+# FUNKTIONEN FÜR RANDOM FOREST MODELLE
+# ----
 
 
 # Funktion zum Features (Stock) extrahieren:
@@ -49,6 +54,7 @@ def extractFeatures_Stock(dataframe, sample_length):
     return pd.DataFrame(features,
                         columns=['Avg_Current', 'Max_Current', 'Min_Current', 'Std_Current', 'Avg_Position',
                                  'Max_Position', 'Min_Position', 'Std_Position']), labels
+
 
 # Funktion zum Features (aus MA Karle) extrahieren:
 def extractFeatures_MA_Karle(dataframe, sample_length):
@@ -107,8 +113,8 @@ def extractFeatures_MA_Karle(dataframe, sample_length):
         mean_frequence_position = np.mean(frequencies)
 
         # 8. Stärke der Asymmetrie (Skewness)
-        #data_skewness_current = skew(data_current)
-        #data_skewness_position = skew(data_position)
+        # data_skewness_current = skew(data_current)
+        # data_skewness_position = skew(data_position)
 
         # 9. Maximum (Max)
         max_value_current = np.max(data_current)
@@ -139,10 +145,8 @@ def extractFeatures_MA_Karle(dataframe, sample_length):
     return pd.DataFrame(features, columns=feature_columns), labels
 
 
-
-
 # Hauptskript zum RF Training mit GridSearch:
-def trainRF_GridSearch(data_raw, n_estimators, sample_lengths , feature_type, scaler, output_dir):
+def trainRF_GridSearch(data_raw, n_estimators, sample_lengths, feature_type, scaler, output_dir):
     results = {}
     grid = np.zeros((len(n_estimators), len(sample_lengths)))
     num_combinations = len(n_estimators) * len(sample_lengths)
@@ -171,7 +175,7 @@ def trainRF_GridSearch(data_raw, n_estimators, sample_lengths , feature_type, sc
                 features, labels = extractFeatures_Stock(dataframe=data, sample_length=sample_length)
 
             ###############################################
-            #Start Random Forest:
+            # Start Random Forest:
             ###############################################
             X = features
             y = labels
@@ -209,7 +213,7 @@ def trainRF_GridSearch(data_raw, n_estimators, sample_lengths , feature_type, sc
         for j in range(len(sample_lengths)):
             plt.text(j, i, f'{grid[i, j] * 100:.2f}%', ha='center', va='center', color='black')
 
-    #plt.colorbar(label='Test Accuracy')
+    # plt.colorbar(label='Test Accuracy')
     plt.colorbar(label='Test Accuracy')
     plt.xticks(np.arange(len(sample_lengths)), sample_lengths)
     plt.yticks(np.arange(len(n_estimators)), n_estimators)
@@ -221,7 +225,7 @@ def trainRF_GridSearch(data_raw, n_estimators, sample_lengths , feature_type, sc
 
 
 # Hauptskript zum RF Test:
-def testRF(data_raw, models, scaler, testdatensatz):
+def testRF(data_raw, models, scaler, testdatensatz, saveData=False, conf_matrix=False):
     used_models = 'RF__' + models + r'/RF_' + scaler + 'Scaler'
     path = os.path.join(Config.PATH_RF, used_models)
 
@@ -247,25 +251,40 @@ def testRF(data_raw, models, scaler, testdatensatz):
         # Modell vorhersagen machen
         predictions = model.predict(features)
         accuracy = accuracy_score(labels, predictions)
-        report = classification_report(labels, predictions)
+        label_order = ['Schritt_Zahnraeder', 'Schritt_Zahnriemen', 'Servo_Zahnraeder', 'Servo_Zahnriemen']
+        report = classification_report(labels, predictions, labels=label_order)
 
         # Konfusionsmatrix
         cm = confusion_matrix(labels, predictions)
 
+        if conf_matrix == True:
+            # Erstellung der Konfusionsmatrix als Grafik
+            plt.figure(figsize=(14, 10))
+            ax = sns.heatmap(cm, annot=True, fmt='g', cmap='Blues', xticklabels=label_order, yticklabels=label_order)
+            ax.set_yticklabels(ax.get_yticklabels(), rotation=90)
+            plt.xlabel('Vorhergesagte Labels')
+            plt.ylabel('Tatsächliche Labels')
+            plt.title('Konfusionsmatrix')
+            path_cm = r'RF__' + models + '\\RF_' + scaler + 'Scaler\\' + 'cm_plot_' + '_' + str(
+                dateiname) + '_Test_' + str(testdatensatz) + '.png'
+            plt.savefig(os.path.join(Config.PATH_RF, path_cm))
+            print('\tKonfusionsmatrix erfolgreich abgespeichert.')
+
         # Ausgabe Ergebnisse
         print(f"\tTestaccuracy:\t{accuracy}")
-        #print("Classification Report:\n", report)
+        # print("Classification Report:\n", report)
         print('---------------------')
 
         # Dictionary mit model & accuracy erstellen
         results[dateiname] = accuracy
 
     # Dictionary als Excel speichern
-    results_df = pd.DataFrame(list(results.items()), columns=['Modellname', 'Accuracy'])
-    excel_name = r'Results_Test/RF_results__Test' + str(testdatensatz) + '_Model' + models + '_' + scaler + 'Scaler.xlsx'
-    path = os.path.join(Config.PATH_RF, excel_name)
-    results_df.to_excel(path, index=False)
-
-    print('Ergebnisse in Excel gespeichert.')
-
-
+    if saveData == True:
+        results_df = pd.DataFrame(list(results.items()), columns=['Modellname', 'Accuracy'])
+        excel_name = r'Results_Test/RF_results__Test' + str(
+            testdatensatz) + '_Model' + models + '_' + scaler + 'Scaler.xlsx'
+        path = os.path.join(Config.PATH_RF, excel_name)
+        results_df.to_excel(path, index=False)
+        print('Ergebnisse in Excel gespeichert.')
+    else:
+        print('Keine Speicherung der Auswertung.')

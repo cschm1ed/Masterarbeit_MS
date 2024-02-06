@@ -1,16 +1,21 @@
 import os
 
 class Config:
+
     ##########
+    # Lokaler Pfad:
     BASE_PATH = r'C:\Users\maxi1\Documents\UNI MASTER KIT\#MASTERARBEIT\05 Sonstige Dokumente\PycharmProjects\Masterarbeit_Schubert'
+    # Google Colab Pfad:
     #BASE_PATH = r'/content/drive/MyDrive/Colab/Masterarbeit_Schubert'
     ##########
+
+
+    # Strings für Pfade
 
     STR_raw_data = r'raw_data_sorted'
     STR_data_alt = r'#alt'
     STR_data_fertig = r'#fertig'
     STR_data_machine_learning = r'#machine_learning'
-
 
     STR_servo_raeder = r"#_servo_zahnräder"
     STR_servo_riemen = r"#_servo_zahnriemen"
@@ -23,7 +28,7 @@ class Config:
     STR_Trainingsdaten = r'Trainingsdaten'
 
 
-
+    # Zusammensetzung der Pfade
     PATH_estlcam_exe = r'C:\Users\maxi1\Documents\UNI MASTER KIT\#MASTERARBEIT\05 Sonstige Dokumente\Estlcam11\Estlcam.exe'
     PATH_logic2_exe = r'C:\Program Files\Logic\Logic.exe'
 

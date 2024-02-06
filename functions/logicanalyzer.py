@@ -9,6 +9,10 @@ from saleae.automation import RadixType
 from saleae.automation import DataTableExportConfiguration
 from configurations.config import Config
 
+# ----
+# FUNKTIONEN ZUR STEUERUNG VON LOGIC 2
+# ----
+
 
 # Funktion zum Starten von Logic2:
 def startLogic2():
@@ -17,6 +21,7 @@ def startLogic2():
     time.sleep(10)
     print('Funktion "startLogic2" abgeschlossen: Anwendung Logic2 geöffnet + LogicAnalyzer initialisiert. ---')
     return prozess
+
 
 # Funktion zum Starten der Datenaufnahme für die Dauer dauer:
 def recordData_Logic2(dauer, motor, getriebe):

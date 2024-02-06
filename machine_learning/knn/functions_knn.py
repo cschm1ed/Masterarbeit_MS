@@ -1,4 +1,3 @@
-import pandas as pd
 import numpy as np
 from keras.models import Sequential
 from keras.layers import LSTM, Dense, Dropout, BatchNormalization
@@ -12,6 +11,11 @@ import os
 from datetime import datetime
 import matplotlib.pyplot as plt
 import seaborn as sns
+
+
+# ----
+# FUNKTIONEN FÜR KNN-MODELLE
+# ----
 
 
 # Daten vorverarbeiten:
@@ -55,8 +59,9 @@ def buildLSTMmodel(input_shape, num_classes, learning_rate):
 
 
 # Speichern der Daten:
-def saveTrainingResultsLSTM(model, history, batch_size, epochs, cm, label_encoder, test_loss, test_accuracy, sample_length,
-                    learning_rate, scaler):
+def saveTrainingResultsLSTM(model, history, batch_size, epochs, cm, label_encoder, test_loss, test_accuracy,
+                            sample_length,
+                            learning_rate, scaler):
     # Erstellen eines neuen Ordners als Speicherort der Ergebnisse
     ordnername = 'LSTM_' + scaler + 'Scaler__' + datetime.now().strftime("%Y%m%d_%H%M%S")
     output_dir = os.path.join(Config.PATH_KNN, ordnername)
@@ -133,6 +138,7 @@ def saveTrainingResultsLSTM(model, history, batch_size, epochs, cm, label_encode
     plt.savefig(os.path.join(output_dir, 'confusion_matrix_plot.png'))
 
 
+# Speichern der Daten:
 def saveTestResultsLSTM(model_name, raw_data_name, sample_length, test_accuracy, test_loss, label_encoder, cm):
     # Erstellen eines neuen Ordners als Speicherort der Ergebnisse
     ordnername = r'Results_Test/LSTM_Results_Test__' + datetime.now().strftime("%Y%m%d_%H%M%S")
@@ -171,7 +177,6 @@ def saveTestResultsLSTM(model_name, raw_data_name, sample_length, test_accuracy,
         plt.ylabel('Wahre Labels')
         plt.title('Konfusionsmatrix')
         plt.savefig(os.path.join(output_dir, 'confusion_matrix_plot.png'))
-
 
 
 # Training eines Modells: (ruft alle obigen Funktionen auf)
@@ -219,9 +224,9 @@ def trainLSTM(data, sample_length, batch_size, epochs, learning_rate, scaler):
 
         # Ergebnisse abspeichern
         saveTrainingResultsLSTM(model=model, history=history, batch_size=batch_size,
-                        epochs=epochs, cm=cm, label_encoder=label_encoder,
-                        test_loss=test_loss, test_accuracy=test_accuracy, sample_length=sample_length,
-                        learning_rate=learning_rate, scaler=scaler)
+                                epochs=epochs, cm=cm, label_encoder=label_encoder,
+                                test_loss=test_loss, test_accuracy=test_accuracy, sample_length=sample_length,
+                                learning_rate=learning_rate, scaler=scaler)
         return test_accuracy, model
 
 

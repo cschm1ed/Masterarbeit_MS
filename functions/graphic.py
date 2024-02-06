@@ -3,6 +3,9 @@ import pandas as pd
 import matplotlib.pyplot as plt
 from configurations.config import Config
 
+# ----
+# FUNKTIONEN ZUR GRAFISCHEN AUSGABE (VERLÄUFE VON POSITION & STROM)
+# ----
 
 
 # Funktion zur Erstellung der matplotlib Figures (für Position + Stromstärke) & automatisches speichern
@@ -58,7 +61,8 @@ def createandsaveMatplotlibFigures():
                     x_position = df_position['time_[s]']
                     y_position = df_position['position_[mm]']
                     plt.figure(figsize=(10, 8))
-                    plt.plot(x_position, y_position, linestyle='-', color='blue', label=txt_name_motor + txt_name_getriebe)
+                    plt.plot(x_position, y_position, linestyle='-', color='blue',
+                             label=txt_name_motor + txt_name_getriebe)
                     # Feste Grenzen für die X- und Y-Achse setzen
                     plt.xlim(x_min, x_max)
                     plt.ylim(y_min_pos, y_max_pos)
@@ -69,7 +73,7 @@ def createandsaveMatplotlibFigures():
                     plt.grid(True)
                     plt.legend(loc='upper left')
                     plt.savefig(os.path.join(verzeichnis_2, 'position_diagramm.png'))
-                    #plt.show()
+                    # plt.show()
 
                     # Diagramm für Stromstärkenverlauf erstellen
                     verzeichnis_current = os.path.join(verzeichnis_2, 'current.csv')
@@ -89,7 +93,7 @@ def createandsaveMatplotlibFigures():
                     plt.grid(True)
                     plt.legend(loc='upper left')
                     plt.savefig(os.path.join(verzeichnis_2, 'current_diagramm.png'))
-                    #plt.show()
+                    # plt.show()
 
                     print('\t.... Figures erfolgreich gespeichert.')
                 else:

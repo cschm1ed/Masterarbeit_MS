@@ -1,5 +1,8 @@
 import functions.general as General
 
+# ----
+# MAIN: Dekodierung & Verarbeitung der aufgenommenen Daten
+# ----
 
 # Hier werden die .csv Dateien für Position + Stromstärke erstellt
 General.createCSV_CurrentPosition()

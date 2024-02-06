@@ -1,28 +1,29 @@
-import pandas as pd
-
-from configurations.config import Config
-import os
 from machine_learning.random_forest.functions_rf import *
 from machine_learning.functions_datapreprocessing import scaleData
 
+# ----
+# MAIN: TRAINING EINES RANDOM FORESTS
+# ----
 
-# Training eines neuen RF:
-##################################################################
-# Eingaben:
 
-#Name der Trainingsdatei
+##############################################################
+# EINGABEN:
+
+# Name der Trainingsdatei
 data_training = r'output_raw+aug+aug_new2_18600.parquet'
 
-#MinMax, Standard oder No
+# MinMax, Standard oder No
 scaler = 'MinMax'
 
-#Feature Type
+# Feature Type
 feature_type = 'MA_Karle'
 
-#Hyperparameter für RF
+# Hyperparameter für RF
 sample_lengths = [25, 50, 100, 200, 300, 1860, 9300, 18600]
 n_estimators = [10, 100]
-##################################################################
+
+##############################################################
+
 
 print('---- Start Training RF: ----')
 print('Rohdatei: ' + data_training)
@@ -47,13 +48,7 @@ else:
 print('---------------------')
 
 # Hauptfunktion
-trainRF_GridSearch(data_raw=data, n_estimators=n_estimators, sample_lengths=sample_lengths, feature_type=feature_type, scaler=scaler, output_dir=output_dir)
+trainRF_GridSearch(data_raw=data, n_estimators=n_estimators, sample_lengths=sample_lengths, feature_type=feature_type,
+                   scaler=scaler, output_dir=output_dir)
 
 print('---- Ende. ----')
-############################################################################################################################
-
-
-
-
-
-

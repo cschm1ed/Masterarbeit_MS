@@ -1,10 +1,9 @@
-# ----
-# FUNKTIONEN ZUR DEKODIERUNG DER DATEN AUS LOGIC 2
-# ----
-
 import pandas as pd
 from tqdm import tqdm  # Zur Anzeige der verbleibenden Dauer in for-Schleifen
 
+# ----
+# FUNKTIONEN ZUR DEKODIERUNG DER DATEN AUS LOGIC 2
+# ----
 
 # Funktionen zu Berechnung zwischen hex, bin, dez:
 
@@ -89,7 +88,6 @@ def decodeCurrent(dateipfad):
     # Für Errors:
     # print(data_new)
     # data_new.to_csv('errors/vergleichlogicarduino.txt', sep=',', index=False)
-
 
     # for-Schleife zum Hinzufügen von Daten
     for i in tqdm(range(0, anzahl_data_new - 1, 2)):

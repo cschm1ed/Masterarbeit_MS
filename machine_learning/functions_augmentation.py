@@ -2,29 +2,30 @@ import pandas as pd
 import os
 from configurations.config import Config
 import numpy as np
-import matplotlib.pyplot as plt
 from scipy.interpolate import interp1d
 import random
-import scipy.interpolate
-from sklearn.preprocessing import StandardScaler
 
-# Funktionen zur Erzeugung von synthetischen Daten:
-####################################################################################
+# ----
+# FUNKTIONEN ZUR ERZEUGUNG VON SYNTHETISCHEN DATEN
+# ----
+
 
 # Funktion zur Erzeugung der Interpolationsfunktion:
 def createIntFunktion():
-    data_old = pd.read_csv(r'C:\Users\maxi1\Documents\UNI MASTER KIT\#MASTERARBEIT\05 Sonstige Dokumente\Data\#Training\#_servo_zahnriemen\2023-12-12_10-23-19\current.csv')
-    data_new = pd.read_csv(r'C:\Users\maxi1\Documents\UNI MASTER KIT\#MASTERARBEIT\05 Sonstige Dokumente\Data\#Testdatensatz_2\#_servo_zahnriemen\2024-01-29_19-33-29\current.csv')
+    data_old = pd.read_csv(
+        r'C:\Users\maxi1\Documents\UNI MASTER KIT\#MASTERARBEIT\05 Sonstige Dokumente\Data\#Training\#_servo_zahnriemen\2023-12-12_10-23-19\current.csv')
+    data_new = pd.read_csv(
+        r'C:\Users\maxi1\Documents\UNI MASTER KIT\#MASTERARBEIT\05 Sonstige Dokumente\Data\#Testdatensatz_2\#_servo_zahnriemen\2024-01-29_19-33-29\current.csv')
 
     data = data_new['current_[mA]'] - data_old['current_[mA]']
 
     dfs = [data, data_new['time_[s]']]
-    data = pd.concat(dfs, axis = 1)
+    data = pd.concat(dfs, axis=1)
     data = data.iloc[:18600]
     data_old = data_old.iloc[:18600]
 
     # Datenpunkte
-    step_size = 120/18599
+    step_size = 120 / 18599
     x = np.arange(0, 120 + step_size, step_size)
     y = np.array(data['current_[mA]'])
 
@@ -35,7 +36,6 @@ def createIntFunktion():
 
 
 # Funktion zur Erzeugung der synthetischen Daten, basierend auf einer Interpolations-Funktion p
-
 def createAugData_Int(p, number_runs, factor_down=0.2, factor_up=1.8):
     print('---- Start: Erstellung synthetischer Daten ----')
     print('\tmit Interpolations-Funktion')
@@ -72,11 +72,13 @@ def createAugData_Int(p, number_runs, factor_down=0.2, factor_up=1.8):
     print('\tDatei erfolgreich abgespeichert.')
     print('---- Ende. ----')
 
+
 # Zusammenfügen von raw- + aug-.parquet Dateien
 def combineParquets(data_1, data_2):
     combined_df = pd.concat([data_1, data_2], ignore_index=True)
-    #combined_df.to_parquet(os.path.join(Config.PATH_Trainingsdaten, r'output_raw+aug_new_18600.parquet'))
+    # combined_df.to_parquet(os.path.join(Config.PATH_Trainingsdaten, r'output_raw+aug_new_18600.parquet'))
     return combined_df
+
 
 # Funktion zur Erzeugung der synthetischen Daten, basierend auf Jittering und Scaling
 def jitter(time_series, sigma=0.1):
@@ -105,6 +107,7 @@ def scale(time_series, scale_range=(0.2, 1.8)):
     return time_series * scale_factor
 
 
+# Funktion zur Erzeugung der synthetischen Daten, basierend auf Jittering & Scaling
 def createAugData_Jitt_Scale(number_runs):
     print('---- Start: Erstellung synthetischer Daten ----')
     print('\t\tmit Jittering und Multiplikation')

@@ -6,8 +6,13 @@ from functions.general import getallPaths
 from sklearn.preprocessing import MinMaxScaler
 from sklearn.preprocessing import StandardScaler
 
+# ----
+# FUNKTIONEN ZUR DATENVORVERARBEITUNG (FÜR MACHINE LEARNING MODELLE)
+# ----
+
+
 # Funktion, welche die Daten labelt
-def labelData(path,data):
+def labelData(path, data):
     # Zuweisen von labels:
     with open(os.path.join(path, 'used_parts.txt'), 'r') as file:
         inhalt = file.read()
@@ -23,7 +28,7 @@ def labelData(path,data):
 
 
 # Datenvorverarbeitung:
-def getParquetRaw(data_name, saveData = False):
+def getParquetRaw(data_name, saveData=False):
     # Aufrufen aller Pfade im Ordner #fertig
     paths = getallPaths()
     combined_df = pd.DataFrame()
@@ -50,7 +55,7 @@ def getParquetRaw(data_name, saveData = False):
         combined_df = pd.concat([combined_df, data], ignore_index=True)
 
     # Ausgabe des gesamten Dataframes:
-    #print(combined_df)
+    # print(combined_df)
     print('---- End. ----')
     # Speichern des gesamten Dataframes in einer neuen .csv Datei:
     if saveData == True:
@@ -65,7 +70,7 @@ def getParquetRaw(data_name, saveData = False):
 def scaleData(raw_data, scaler_type):
     print('\t---- Start: scaleData ----')
 
-    if isinstance(raw_data, pd.DataFrame) :
+    if isinstance(raw_data, pd.DataFrame):
         data = raw_data
     elif isinstance(raw_data, str):
         data = pd.read_parquet(raw_data)
