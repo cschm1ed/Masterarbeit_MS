@@ -34,15 +34,17 @@ Um dieses Projekt zu verwenden, führen Sie die folgenden Schritte aus:
 
 Nach der Installation können Sie das Projekt wie folgt ausführen:
 
-1. Durchführen der Referenzfahrten:
+1. Durchführen der Referenzfahrten 
 
-2. Dekodieren der aufgezeichneten Daten:
+2. Dekodieren der aufgezeichneten Daten
 
-3. Trainieren der ML-Modelle:
+3. Trainieren der ML-Modelle
 
-4. Anwenden der trainierten ML-Algorithmen:
+4. Anwenden der trainierten ML-Algorithmen 
 
 ## Lizenz
+
+wbk -Institut für Produktionstechnik
 
 ## Kontakt
 
