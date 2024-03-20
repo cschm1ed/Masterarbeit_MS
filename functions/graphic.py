@@ -25,7 +25,7 @@ def createandsaveMatplotlibFigures():
             for dateiname in dateinamen:
                 pfad_zur_datei = os.path.join(verzeichnis_2, dateiname)
                 print('--- ' + ordner + '\t' + ordner_2 + ':')
-                if not os.path.isfile(pfad_zur_datei):
+                if os.path.isfile(pfad_zur_datei):
                     # Zugriff auf Daten der Messung
                     with open(os.path.join(verzeichnis_2, 'used_parts.txt'), 'r') as file:
                         lines = file.readlines()
@@ -66,12 +66,12 @@ def createandsaveMatplotlibFigures():
                     # Feste Grenzen für die X- und Y-Achse setzen
                     plt.xlim(x_min, x_max)
                     plt.ylim(y_min_pos, y_max_pos)
-                    plt.title('Position:', loc='left')
-                    plt.title(txt_time, loc='right')
-                    plt.xlabel('Zeit [s]')
-                    plt.ylabel('Position [mm]')
+                    plt.title('Position:', loc='left', fontsize=16)
+                    plt.title(txt_time, loc='right', fontsize=16)
+                    plt.xlabel('Zeit [s]', fontsize=16)
+                    plt.ylabel('Position [mm]', fontsize=16)
                     plt.grid(True)
-                    plt.legend(loc='upper left')
+                    plt.legend(loc='upper left', fontsize=16)
                     plt.savefig(os.path.join(verzeichnis_2, 'position_diagramm.png'))
                     # plt.show()
 
@@ -85,13 +85,13 @@ def createandsaveMatplotlibFigures():
                     plt.plot(x_current, y_current, linestyle='-', color='red', label=txt_name_motor + txt_name_getriebe)
                     # Feste Grenzen für die X- und Y-Achse setzen
                     plt.xlim(x_min, x_max)
-                    plt.ylim(y_min_curr, y_max_curr)
-                    plt.title('Current:', loc='left')
-                    plt.title(txt_time, loc='right')
-                    plt.xlabel('Zeit [s]')
-                    plt.ylabel('Current [mA]')
+                    #plt.ylim(y_min_curr, y_max_curr)
+                    plt.title('Current:', loc='left', fontsize=16)
+                    plt.title(txt_time, loc='right', fontsize=16)
+                    plt.xlabel('Zeit [s]', fontsize=16)
+                    plt.ylabel('Current [mA]', fontsize=16)
                     plt.grid(True)
-                    plt.legend(loc='upper left')
+                    plt.legend(loc='upper left', fontsize=16)
                     plt.savefig(os.path.join(verzeichnis_2, 'current_diagramm.png'))
                     # plt.show()
 

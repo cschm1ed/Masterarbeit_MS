@@ -172,10 +172,12 @@ def saveTestResultsLSTM(model_name, raw_data_name, sample_length, test_accuracy,
         # Konfusionsmatrix grafisch darstellen
         plt.figure(figsize=(14, 10))
         sns.heatmap(cm, annot=True, fmt='g', cmap='Blues', xticklabels=label_encoder.classes_,
-                    yticklabels=label_encoder.classes_)
-        plt.xlabel('Vorhergesagte Labels')
-        plt.ylabel('Wahre Labels')
-        plt.title('Konfusionsmatrix')
+                    yticklabels=label_encoder.classes_, annot_kws={"size": 16, "weight": "bold"})
+        plt.xlabel('Vorhergesagte Labels', fontsize=16)
+        plt.ylabel('Wahre Labels', fontsize=16)
+        plt.title('Konfusionsmatrix', fontsize=16)
+        plt.xticks(fontsize=14)  # Schriftgröße der X-Achsen-Ticks ändern
+        plt.yticks(fontsize=14)  # Schriftgröße der Y-Achsen-Ticks ändern
         plt.savefig(os.path.join(output_dir, 'confusion_matrix_plot.png'))
 
 

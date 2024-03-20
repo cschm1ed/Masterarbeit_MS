@@ -15,7 +15,8 @@ import os
 # 2: selbe Ref.-fahrt mit Gewicht m=2.5kg
 # Train: alte Ref.-fahrt ohne Gewicht (Trainingsdaten)
 # testdatensatz = '1'
-testdatensatze = [1, 2]
+#testdatensatze = [1, 2]
+testdatensatze = ['Train']
 
 # Auswahl der Modelle:
 # aus Train Daten: r'output_raw_18600.parquet'

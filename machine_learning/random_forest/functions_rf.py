@@ -12,6 +12,8 @@ import glob
 from sklearn.metrics import accuracy_score, classification_report, confusion_matrix
 from joblib import load
 import seaborn as sns
+from datetime import datetime
+
 
 # ----
 # FUNKTIONEN FÜR RANDOM FOREST MODELLE
@@ -260,13 +262,13 @@ def testRF(data_raw, models, scaler, testdatensatz, saveData=False, conf_matrix=
         if conf_matrix == True:
             # Erstellung der Konfusionsmatrix als Grafik
             plt.figure(figsize=(14, 10))
-            ax = sns.heatmap(cm, annot=True, fmt='g', cmap='Blues', xticklabels=label_order, yticklabels=label_order)
+            ax = sns.heatmap(cm, annot=True, fmt='g', cmap='Blues', xticklabels=label_order, yticklabels=label_order, annot_kws={"size": 16, "weight": "bold"})
             ax.set_yticklabels(ax.get_yticklabels(), rotation=90)
-            plt.xlabel('Vorhergesagte Labels')
-            plt.ylabel('Tatsächliche Labels')
-            plt.title('Konfusionsmatrix')
+            plt.xlabel('Vorhergesagte Labels', fontsize=16)
+            plt.ylabel('Wahre Labels', fontsize=16)
+            plt.title('Konfusionsmatrix', fontsize=16)
             path_cm = r'RF__' + models + '\\RF_' + scaler + 'Scaler\\' + 'cm_plot_' + '_' + str(
-                dateiname) + '_Test_' + str(testdatensatz) + '.png'
+                dateiname) + '_Test_' + str(testdatensatz) + '_' + datetime.now().strftime("%Y%m%d_%H%M%S") + str(accuracy) + '.png'
             plt.savefig(os.path.join(Config.PATH_RF, path_cm))
             print('\tKonfusionsmatrix erfolgreich abgespeichert.')
 

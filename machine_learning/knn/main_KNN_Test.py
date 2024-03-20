@@ -11,10 +11,11 @@ from machine_learning.functions_datapreprocessing import scaleData
 # EINGABEN:
 
 # Auswahl des Testdatensatzes:
+# jeweils mit Endung _raw oder _filtered (dann mit Tiefpass gefiltert)
 # 1: andere Ref.-fahrt mit Gewicht m=2.5kg
 # 2: selbe Ref.-fahrt mit Gewicht m=2.5kg
 # Train: alte Ref.-fahrt ohne Gewicht (Trainingsdaten)
-testdatensatz = '2'
+testdatensatz = '1_raw'
 
 # Auswahl der Modells:
 # model_LSTM_Standard_TrainData.h5/.keras
@@ -24,7 +25,8 @@ testdatensatz = '2'
 # model_LSTM_Standard_TrainAugData.h5/.keras
 # model_LSTM_Standard_TrainAugAugNewData.h5/.keras
 # model_LSTM_Standard_TrainAugAugNew2Data.h5/.keras
-version = 'AugNew2'
+# model_LSTM_Standard_filtered_v1_Data.h5/.keras
+version = 'TrainAugAugNew2'
 model_name = r'model_LSTM_Standard_' + version + 'Data.h5'
 
 # MinMax oder Standard
@@ -35,7 +37,7 @@ sample_length = 25
 
 
 # Einlesen der Rohdatei
-raw_data_name = r'output_Testdatensatz_' + str(testdatensatz) + '_raw.parquet'
+raw_data_name = r'output_Testdatensatz_' + str(testdatensatz) + '.parquet'
 data_raw = os.path.join(Config.PATH_Testdaten, raw_data_name)
 df = pd.read_parquet(data_raw)
 
