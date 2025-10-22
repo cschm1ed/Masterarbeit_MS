@@ -4,7 +4,7 @@ class Config:
 
     ##########
     # Lokaler Pfad:
-    BASE_PATH = r'C:\Users\maxi1\Documents\UNI MASTER KIT\#MASTERARBEIT\05 Sonstige Dokumente\PycharmProjects\Masterarbeit_Schubert'
+    BASE_PATH = r'C:\Users\proki\Desktop\Oktober25_DHBW\Neuer Ordner'
     # Google Colab Pfad:
     #BASE_PATH = r'/content/drive/MyDrive/Colab/Masterarbeit_Schubert'
     ##########
@@ -29,7 +29,7 @@ class Config:
 
 
     # Zusammensetzung der Pfade
-    PATH_estlcam_exe = r'C:\Users\maxi1\Documents\UNI MASTER KIT\#MASTERARBEIT\05 Sonstige Dokumente\Estlcam11\Estlcam.exe'
+    PATH_estlcam_exe =r'C:\Users\proki\Downloads\MA MS\MA MS\Orga MA MS\05 Sonstige Dokumente\Estlcam11\Estlcam.exe'
     PATH_logic2_exe = r'C:\Program Files\Logic\Logic.exe'
 
     PATH_raw_data = os.path.join(BASE_PATH, STR_raw_data)

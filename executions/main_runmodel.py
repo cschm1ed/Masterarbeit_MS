@@ -15,17 +15,17 @@ import functions.general as General
 # EINGABEN:
 
 # Anzahl der Referenzfahrten:
-n = 3
+n = 1
 
 # Dauer einer einzelnen Referenzfahrt (für die Datenaufnahme):
-dauer = 120
+dauer = 30
 
 # Benutzte Teile:
 motor = 'Servomotor'
 getriebe = 'Zahnriemen'
 
 # Mailadresse:
-mailadress = 'maxi11696@googlemail.com'
+mailadress = 'schmiedt.christi.a23@student.dhbw-karlsruhe.de'
 
 ##############################################################
 

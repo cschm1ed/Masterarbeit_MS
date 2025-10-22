@@ -17,6 +17,7 @@ def createandsaveMatplotlibFigures():
         verzeichnis = os.path.join(Config.PATH_data_fertig, ordner)
         ordner_liste_2 = [d for d in os.listdir(verzeichnis) if
                           os.path.isdir(os.path.join(verzeichnis, d))]
+        print("Verzeichnis" + verzeichnis)
         print('\n--- ' + ordner + ':')
 
         for ordner_2 in ordner_liste_2:

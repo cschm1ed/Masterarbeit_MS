@@ -23,15 +23,29 @@ def openEstlcam():
     prozess = subprocess.Popen([exe_datei_pfad])
     # Starten der Mausbewegung:
     time.sleep(8)
-    pyautogui.click(220, 30)
-    pyautogui.click(220, 100)
+    # Einstellung öffnen
+    pyautogui.moveTo(440,80,2)
+    pyautogui.click(440, 80)
+    # CNC Steuerung öffnen
+    pyautogui.moveTo(440, 210, 2)
+    pyautogui.click(440, 210)
     time.sleep(3)
     # Fenster in richtige Position verschieben
+    ##########
+
     aktives_fenster = gw.getActiveWindow()
     aktives_fenster.moveTo(0, 0)
-    pyautogui.click(260, 410)
-    time.sleep(3)
-    pyautogui.click(1270, 720)
+
+    ##############
+    #
+   # pyautogui.moveTo(260,270,3)
+   # pyautogui.click(260, 270)
+   # time.sleep(3)
+
+    #############
+    #Steuerung programmieren
+    pyautogui.moveTo(438,805,2)
+    pyautogui.click(438, 805)
     time.sleep(7)
     # Fenster maximieren
     aktives_fenster = gw.getActiveWindow()
@@ -47,18 +61,31 @@ def openReferenceRun():
     fenstertitel = aktives_fenster.title
     if fenstertitel == "Estlcam 11,245_A_64":
         time.sleep(2)
-        pyautogui.click(1590, 1030)
+        pyautogui.moveTo(3135,148,2)
+        pyautogui.click(3135, 148)
         time.sleep(3)
-        pyautogui.click(1875, 50)
-        time.sleep(3)
+       ### pyautogui.moveTo(497, 488, 2)
+       ## pyautogui.click(497, 488)
+       # time.sleep(3)
         # Fenster in richtige Position verschieben
-        aktives_fenster = gw.getActiveWindow()
-        aktives_fenster.moveTo(0, 0)
-        time.sleep(3)
-        pyautogui.doubleClick(750, 160)
-        time.sleep(12)
-        pyautogui.click(1160, 660)
-        time.sleep(3)
+       # aktives_fenster = gw.getActiveWindow()
+       # aktives_fenster.moveTo(0, 0)
+       # time.sleep(3)
+        ### C3 CNC auswählen
+
+
+        pyautogui.moveTo(487, 429, 2)
+        pyautogui.doubleClick(487, 429)
+        #max: 432:419
+        #Pilger5: 454:375
+        #Pilger1: 487:429
+        #488
+        time.sleep(7)
+
+        pyautogui.moveTo(2008, 1119, 2)
+        pyautogui.click(2008, 1119)
+       # pyautogui.click(1160, 660)
+       # time.sleep(3)
         print('Funktion "openReferenceRun" abgeschlossen. ---')
     else:
         print("Fehler: CNC-Controller nicht richtig geöffnet. ---")
@@ -67,4 +94,6 @@ def openReferenceRun():
 # Funktion zum Starten der Referenzfahrt:
 def startReferenceRun():
     time.sleep(1)
-    pyautogui.click(1605, 1057)
+    # run drücken
+    pyautogui.moveTo(2547, 1781, 2)
+    pyautogui.click(2547, 1781)
