@@ -1,0 +1,11 @@
+# Ignore all CSV files
+*.csv
+
+# Ignore Python cache
+__pycache__/
+
+# Ignore IDE project files (PyCharm, IntelliJ, etc.)
+.idea/
+
+# Ignore everything in raw_data_sorted
+raw_data_sorted/
