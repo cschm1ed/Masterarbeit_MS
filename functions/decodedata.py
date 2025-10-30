@@ -34,13 +34,12 @@ def hex_to_bin(hex_string):
 
 # Funktion zum Einlesen + Dekodieren der Stromstärke aus dem Logic 2 Export (digital_table.csv):
 def decodeCurrent(dateipfad):
-    print('\t --- Dekodierung Current:\n')
+    print(f'\t --- Dekodierung Current: {dateipfad}\n')
 
     # Einlesen in ein Pandas dataframe
     df = pd.read_csv(dateipfad)
 
     # Bedingung überprüfen, ob 'data' die Werte '0x04' (unabhängig von der Groß- und Kleinschreibung) enthält (stellt die Read Bedingung dar)
-
     bedingung = df['data'].str.contains(r'0x04', na=False, case=False, regex=True)  # & df['ack'] == True
 
     # Den Index der Zeile mit der erfüllten Bedingung (True) erhalten
