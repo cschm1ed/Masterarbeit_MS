@@ -57,7 +57,7 @@ def create_plot_file(ordner, txt_name_getriebe, txt_name_motor, txt_time, verzei
     x_min = -2
     x_max = 120
     y_min_pos = -250
-    y_max_pos = 250
+    y_max_pos = 1000
     # Diagramm für Positionsverlauf erstellen
     verzeichnis_position = os.path.join(verzeichnis_2, 'position.csv')
     df_position = pd.read_csv(verzeichnis_position)

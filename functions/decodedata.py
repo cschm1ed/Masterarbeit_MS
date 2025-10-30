@@ -40,6 +40,7 @@ def decodeCurrent(dateipfad):
     df = pd.read_csv(dateipfad)
 
     # Bedingung überprüfen, ob 'data' die Werte '0x04' (unabhängig von der Groß- und Kleinschreibung) enthält (stellt die Read Bedingung dar)
+
     bedingung = df['data'].str.contains(r'0x04', na=False, case=False, regex=True)  # & df['ack'] == True
 
     # Den Index der Zeile mit der erfüllten Bedingung (True) erhalten

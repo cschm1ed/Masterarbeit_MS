@@ -14,6 +14,7 @@ from configurations.config import Config
 # evtl. müssen die Positionierbefehle (x & y) neu definiert werden
 # Code ist auf einen 13 Zoll großen Laptop ausgelegt
 
+MOUSE_MOVEMENT_DURATION = 2
 
 # Funktion zum Öffnen von Estlcam & des CNC-Controller:
 def openEstlcam():
@@ -24,10 +25,10 @@ def openEstlcam():
     # Starten der Mausbewegung:
     time.sleep(8)
     # Einstellung öffnen
-    pyautogui.moveTo(440,80,2)
+    pyautogui.moveTo(440,80,MOUSE_MOVEMENT_DURATION)
     pyautogui.click(440, 80)
     # CNC Steuerung öffnen
-    pyautogui.moveTo(440, 210, 2)
+    pyautogui.moveTo(440, 210, MOUSE_MOVEMENT_DURATION)
     pyautogui.click(440, 210)
     time.sleep(3)
     # Fenster in richtige Position verschieben
@@ -44,7 +45,7 @@ def openEstlcam():
 
     #############
     #Steuerung programmieren
-    pyautogui.moveTo(438,805,2)
+    pyautogui.moveTo(438,805,MOUSE_MOVEMENT_DURATION)
     pyautogui.click(438, 805)
     time.sleep(7)
     # Fenster maximieren
@@ -61,7 +62,7 @@ def openReferenceRun():
     fenstertitel = aktives_fenster.title
     if fenstertitel == "Estlcam 11,245_A_64":
         time.sleep(2)
-        pyautogui.moveTo(3135,148,2)
+        pyautogui.moveTo(3135,148,MOUSE_MOVEMENT_DURATION)
         pyautogui.click(3135, 148)
         time.sleep(3)
        ### pyautogui.moveTo(497, 488, 2)
@@ -74,7 +75,7 @@ def openReferenceRun():
         ### C3 CNC auswählen
 
 
-        pyautogui.moveTo(487, 429, 2)
+        pyautogui.moveTo(487, 429, MOUSE_MOVEMENT_DURATION)
         pyautogui.doubleClick(487, 429)
         #max: 432:419
         #Pilger5: 454:375
@@ -82,7 +83,7 @@ def openReferenceRun():
         #488
         time.sleep(7)
 
-        pyautogui.moveTo(2008, 1119, 2)
+        pyautogui.moveTo(2008, 1119, MOUSE_MOVEMENT_DURATION)
         pyautogui.click(2008, 1119)
        # pyautogui.click(1160, 660)
        # time.sleep(3)
@@ -95,5 +96,5 @@ def openReferenceRun():
 def startReferenceRun():
     time.sleep(1)
     # run drücken
-    pyautogui.moveTo(2547, 1781, 2)
+    pyautogui.moveTo(2547, 1781, MOUSE_MOVEMENT_DURATION)
     pyautogui.click(2547, 1781)
