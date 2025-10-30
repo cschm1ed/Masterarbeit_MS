@@ -148,23 +148,26 @@ def decodePosition(dateipfad):
         # Ohne NoChanges & Errors
         if (current == [0, 0]) and (previous == [0, 1]):
             counter += 1
-        if (current == [0, 0]) and (previous == [1, 0]):
+        elif (current == [0, 0]) and (previous == [1, 0]):
             counter -= 1
 
-        if (current == [0, 1]) and (previous == [0, 0]):
+        elif (current == [0, 1]) and (previous == [0, 0]):
             counter -= 1
-        if (current == [0, 1]) and (previous == [1, 1]):
+        elif (current == [0, 1]) and (previous == [1, 1]):
             counter += 1
 
-        if (current == [1, 0]) and (previous == [0, 0]):
+        elif (current == [1, 0]) and (previous == [0, 0]):
             counter += 1
-        if (current == [1, 0]) and (previous == [1, 1]):
+        elif (current == [1, 0]) and (previous == [1, 1]):
             counter -= 1
 
-        if (current == [1, 1]) and (previous == [0, 1]):
+        elif (current == [1, 1]) and (previous == [0, 1]):
             counter -= 1
-        if (current == [1, 1]) and (previous == [1, 0]):
+        elif (current == [1, 1]) and (previous == [1, 0]):
             counter += 1
+
+        else:
+            print(f"Fehlerhafte Daten des Glasmaßstab; previous = {previous}; current = {current}")
 
         array_position.append(counter * 0.005)
         array_time.append(time_neu)
