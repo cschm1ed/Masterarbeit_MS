@@ -54,7 +54,9 @@ for i in range(1, n + 1):
     if i == n:
         General.sendMail(recieveradress=mailadress, iteration=i, numberofdrives=n)
     # Pause zum Abkühlen von Motor & Spindel
-    time.sleep(10)
+    if n > 1:
+        time.sleep(10)
+
 
 print("\nReferenzfahrten (" + str(n) + ") erfolgreich abgeschlossen. ---")
 # Schließen von Logic2 & Estlcam
