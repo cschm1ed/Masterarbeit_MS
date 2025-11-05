@@ -1,0 +1,7 @@
+Used parts:
+
+Motor: Servomotor
+Getriebe: Zahnriemen
+
+
+2025-10-30_16-34-24

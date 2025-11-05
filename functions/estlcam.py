@@ -14,7 +14,7 @@ from configurations.config import Config
 # evtl. müssen die Positionierbefehle (x & y) neu definiert werden
 # Code ist auf einen 13 Zoll großen Laptop ausgelegt
 
-MOUSE_MOVEMENT_DURATION = 2
+MOUSE_MOVEMENT_DURATION = 1
 
 # Funktion zum Öffnen von Estlcam & des CNC-Controller:
 def openEstlcam():

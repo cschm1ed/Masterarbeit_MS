@@ -32,8 +32,8 @@ def recordData_Logic2(dauer, motor, getriebe):
         device_configuration = automation.LogicDeviceConfiguration(
             enabled_digital_channels=[0, 1, 4, 5],
             # evtl. noch Channel 2 als Trigger (siehe auch unten) & Channel 6 als Z bei Glasmaßstab
-            digital_sample_rate=20_000_000,
-            # digital_threshold_volts=3.3,
+            digital_sample_rate=10_000_000,
+            # digital_threshold_volts=3.3
         )
 
         # Aufnahme für die Zeitdauer dauer

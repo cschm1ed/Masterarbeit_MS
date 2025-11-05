@@ -139,12 +139,12 @@ def decodePosition(dateipfad):
     array_position = []
     array_time = []
     counter = 0
+    error_counter = 0
 
     for i in tqdm(range(len(array_channel4) - 1)):  # tqdm: Zur Anzeige der verbleibenden Dauer
         current = [array_channel4[i + 1], array_channel5[i + 1]]
         previous = [array_channel4[i], array_channel5[i]]
         time_neu = array_channeltime[i]
-
         # Ohne NoChanges & Errors
         if (current == [0, 0]) and (previous == [0, 1]):
             counter += 1
@@ -167,11 +167,12 @@ def decodePosition(dateipfad):
             counter += 1
 
         else:
-            print(f"Fehlerhafte Daten des Glasmaßstab; previous = {previous}; current = {current}")
+            error_counter = error_counter + 1
 
         array_position.append(counter * 0.005)
         array_time.append(time_neu)
 
+    print(f"Fehlerhafte Zustände des Glasmaßstab: # = {error_counter}")
     data = {'time_[s]': array_time, 'position_[mm]': array_position}
     ergebnis_df = pd.DataFrame(data)
 
