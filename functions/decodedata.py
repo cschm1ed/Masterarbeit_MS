@@ -150,22 +150,18 @@ def decodePosition(dateipfad):
             counter += 1
         elif (current == [0, 0]) and (previous == [1, 0]):
             counter -= 1
-
         elif (current == [0, 1]) and (previous == [0, 0]):
             counter -= 1
         elif (current == [0, 1]) and (previous == [1, 1]):
             counter += 1
-
         elif (current == [1, 0]) and (previous == [0, 0]):
             counter += 1
         elif (current == [1, 0]) and (previous == [1, 1]):
             counter -= 1
-
         elif (current == [1, 1]) and (previous == [0, 1]):
             counter -= 1
         elif (current == [1, 1]) and (previous == [1, 0]):
             counter += 1
-
         # Der vollständigkeit halber hier auch die no change Bedingungen
         elif (current == previous):
             pass
@@ -178,5 +174,4 @@ def decodePosition(dateipfad):
     print(f"Fehlerhafte Zustände des Glasmaßstab: # = {error_counter}")
     data = {'time_[s]': array_time, 'position_[mm]': array_position}
     ergebnis_df = pd.DataFrame(data)
-
     return ergebnis_df
