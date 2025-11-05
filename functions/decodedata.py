@@ -166,6 +166,9 @@ def decodePosition(dateipfad):
         elif (current == [1, 1]) and (previous == [1, 0]):
             counter += 1
 
+        # Der vollständigkeit halber hier auch die no change Bedingungen
+        elif (current == previous):
+            pass
         else:
             error_counter = error_counter + 1
 
