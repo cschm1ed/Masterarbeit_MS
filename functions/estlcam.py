@@ -2,6 +2,8 @@ import subprocess
 import pyautogui
 import time
 import pygetwindow as gw
+from pyautogui import click
+
 from configurations.config import Config
 
 
@@ -14,7 +16,7 @@ from configurations.config import Config
 # evtl. müssen die Positionierbefehle (x & y) neu definiert werden
 # Code ist auf einen 13 Zoll großen Laptop ausgelegt
 
-MOUSE_MOVEMENT_DURATION = 1
+MOUSE_MOVEMENT_DURATION = 0.5
 
 # Funktion zum Öffnen von Estlcam & des CNC-Controller:
 def openEstlcam():
@@ -23,7 +25,7 @@ def openEstlcam():
     # Die ausführbare Datei öffnen
     prozess = subprocess.Popen([exe_datei_pfad])
     # Starten der Mausbewegung:
-    time.sleep(8)
+    time.sleep(5)
     # Einstellung öffnen
     pyautogui.moveTo(440,80,MOUSE_MOVEMENT_DURATION)
     pyautogui.click(440, 80)
@@ -62,6 +64,9 @@ def openReferenceRun():
     fenstertitel = aktives_fenster.title
     if fenstertitel == "Estlcam 11,245_A_64":
         time.sleep(2)
+        pyautogui.moveTo(3100, 1000, MOUSE_MOVEMENT_DURATION)
+        pyautogui.click(3100, 1000)
+        time.sleep(19)
         pyautogui.moveTo(3135,148,MOUSE_MOVEMENT_DURATION)
         pyautogui.click(3135, 148)
         time.sleep(3)
