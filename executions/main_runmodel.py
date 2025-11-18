@@ -26,7 +26,7 @@ getriebe = 'Zahnriemen'
 
 # Mailadresse:
 mailadress = 'schmiedt.christi.a23@student.dhbw-karlsruhe.de'
-
+EMAIL_ACTIVE = False
 ##############################################################
 
 
@@ -36,7 +36,8 @@ prozess_Estlcam = Estlcam.openEstlcam()
 Estlcam.openReferenceRun()
 
 # Mail beim Start senden
-General.sendMail(recieveradress=mailadress, iteration=0, numberofdrives=n)
+if EMAIL_ACTIVE:
+    General.sendMail(recieveradress=mailadress, iteration=0, numberofdrives=n)
 # durch Anzahl der Referenzfahrten iterieren
 for i in range(1, n + 1):
     print("--- Start Referenzfahrt " + str(i) + "/" + str(n) + ":\t" + motor + " - " + getriebe)
@@ -45,13 +46,14 @@ for i in range(1, n + 1):
     print("\t.... Referenzfahrt " + str(i) + "/" + str(n) + " done")
     # Mail senden
     if i % 5 == 0 and i != n:
-        General.sendMail(recieveradress=mailadress, iteration=i, numberofdrives=n)
+        if EMAIL_ACTIVE:
+            General.sendMail(recieveradress=mailadress, iteration=i, numberofdrives=n)
         print('\n--- Pause: 90s')
         for j in tqdm(range(1, 91)):
             time.sleep(1)
         print('\n')
     # Mail senden nach Abschluss
-    if i == n:
+    if i == n and EMAIL_ACTIVE:
         General.sendMail(recieveradress=mailadress, iteration=i, numberofdrives=n)
     # Pause zum Abkühlen von Motor & Spindel
     if n > 1:
