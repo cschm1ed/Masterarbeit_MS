@@ -18,7 +18,7 @@ import functions.general as General
 n = 1
 
 # Dauer einer einzelnen Referenzfahrt (für die Datenaufnahme):
-dauer = 30
+dauer = 60
 
 # Benutzte Teile:
 motor = 'Servomotor'

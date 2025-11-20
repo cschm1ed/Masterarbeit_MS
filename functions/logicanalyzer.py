@@ -30,28 +30,28 @@ def recordData_Logic2(dauer, motor, getriebe):
 
     with automation.Manager.connect(port=10430) as manager:
         device_configuration = automation.LogicDeviceConfiguration(
-            enabled_digital_channels=[0, 1, 4, 5],
+            enabled_digital_channels=[0, 1, 4, 5, 7],
             # evtl. noch Channel 2 als Trigger (siehe auch unten) & Channel 6 als Z bei Glasmaßstab
             digital_sample_rate=10_000_000,
             # digital_threshold_volts=3.3
         )
 
         # Aufnahme für die Zeitdauer dauer
-        capture_configuration_timecapture = automation.CaptureConfiguration(
-            capture_mode=automation.TimedCaptureMode(duration_seconds=dauer)
-        )
+        #capture_configuration_timecapture = automation.CaptureConfiguration(
+        #    capture_mode=automation.TimedCaptureMode(duration_seconds=dauer)
+        #)
 
         # Aufnahme bei Auslösen eines Triggers (Channel 2) & für die Zeitdauer dauer & 2s vor dem Trigger
-        # triggertype = automation.DigitalTriggerType.RISING
-        # capture_configuration_trigger = automation.CaptureConfiguration(
-        # capture_mode=automation.DigitalTriggerCaptureMode(trigger_channel_index=2, trigger_type=triggertype, trim_data_seconds=2, after_trigger_seconds=dauer)
-        # )
+        triggertype = automation.DigitalTriggerType.FALLING
+        capture_configuration_trigger = automation.CaptureConfiguration(
+        capture_mode=automation.DigitalTriggerCaptureMode(trigger_channel_index=7, trigger_type=triggertype, trim_data_seconds=dauer, after_trigger_seconds=0.5)
+        )
 
         with manager.start_capture(
                 device_id='A60D1D2452ABF025',  # Logic8 Device
                 # device_id='F4241', # für Demo Version
                 device_configuration=device_configuration,
-                capture_configuration=capture_configuration_timecapture) as capture:
+                capture_configuration=capture_configuration_trigger) as capture:
             # Start der Referenzfahrt
             Estlcam.startReferenceRun()
             # Warten bis die capture beendet ist
@@ -89,7 +89,7 @@ def recordData_Logic2(dauer, motor, getriebe):
             )
 
             # Export von raw_digital_data für die Channel 4 & 5
-            capture.export_raw_data_csv(directory=output_dir, digital_channels=[4, 5])
+            capture.export_raw_data_csv(directory=output_dir, digital_channels=[4, 5, 7])
 
             # Speichern der capture Datei
             # capture_filepath = os.path.join(output_dir, 'capture.sal')
