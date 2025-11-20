@@ -29,11 +29,14 @@ def recordData_Logic2(dauer, motor, getriebe):
     # https://saleae.github.io/logic2-automation/
 
     with automation.Manager.connect(port=10430) as manager:
+        glitchFilter = automation.GlitchFilterEntry(channel_index=7, pulse_width_seconds=0.000001)
+
         device_configuration = automation.LogicDeviceConfiguration(
             enabled_digital_channels=[0, 1, 4, 5, 7],
             # evtl. noch Channel 2 als Trigger (siehe auch unten) & Channel 6 als Z bei Glasmaßstab
-            digital_sample_rate=10_000_000,
+            digital_sample_rate=1000000#,
             # digital_threshold_volts=3.3
+            #glitch_filters=[glitchFilter]
         )
 
         # Aufnahme für die Zeitdauer dauer
@@ -42,9 +45,12 @@ def recordData_Logic2(dauer, motor, getriebe):
         #)
 
         # Aufnahme bei Auslösen eines Triggers (Channel 2) & für die Zeitdauer dauer & 2s vor dem Trigger
-        triggertype = automation.DigitalTriggerType.FALLING
+        triggertype = automation.DigitalTriggerType.RISING
         capture_configuration_trigger = automation.CaptureConfiguration(
-        capture_mode=automation.DigitalTriggerCaptureMode(trigger_channel_index=7, trigger_type=triggertype, trim_data_seconds=dauer, after_trigger_seconds=0.5)
+            buffer_size_megabytes=4000,
+            capture_mode=automation.DigitalTriggerCaptureMode(trigger_channel_index=7, trigger_type=triggertype,
+                                                              trim_data_seconds=dauer, after_trigger_seconds=0.5),
+
         )
 
         with manager.start_capture(
